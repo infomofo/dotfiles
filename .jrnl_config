@@ -1,20 +1,23 @@
 {
-  "default_hour": 9, 
-  "linewrap": 79, 
-  "encrypt": false, 
-  "default_minute": 0, 
-  "tagsymbols": "#@", 
-  "editor": "vim", 
-  "timeformat": "%Y-%m-%d %H:%M", 
-  "highlight": true, 
+  "default_hour": 9,
+  "linewrap": 79,
+  "encrypt": false,
+  "default_minute": 0,
+  "tagsymbols": "#@",
+  "editor": "vim",
+  "timeformat": "%Y-%m-%d %H:%M",
+  "highlight": true,
   "journals": {
-    "default": "~/Journal/jrnl.md", 
+    "default": "/Users/will/Journal/jrnl.md",
     "personal": {
-      "journal": "~/Journal/personal.md", 
+      "journal": "~/Journal/personal.md",
       "encrypt": true
-    }, 
-    "kit": "~/Journal/kit.md", 
-    "dnd": "~/Journal/dnd.md", 
-    "food": "~/Journal/food.md"
+    },
+    "dream": {
+      "journal": "~/Journal/dream.md",
+      "encrypt": true
+    },
+    "kit": "~/Journal/kit.md",
+    "sleep": "~/Journal/sleep.md"
   }
 }
