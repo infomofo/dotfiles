@@ -9,15 +9,16 @@
   "highlight": true,
   "journals": {
     "default": "/Users/will/Journal/jrnl.md",
-    "personal": {
-      "journal": "~/Journal/personal.md",
-      "encrypt": true
-    },
+    "developer": "~/Journal/developer.md",
     "dream": {
       "journal": "~/Journal/dream.md",
       "encrypt": true
     },
     "kit": "~/Journal/kit.md",
+    "personal": {
+      "journal": "~/Journal/personal.md",
+      "encrypt": true
+    },
     "sleep": "~/Journal/sleep.md"
   }
 }
