@@ -1,7 +1,7 @@
 " PLUGINS
 
 " COLORS
-colorscheme torte
+colorscheme ron
 
 syntax enable
 filetype indent on
