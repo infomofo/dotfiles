@@ -1,7 +1,7 @@
 " PLUGINS
 
 " COLORS
-colorscheme ron
+colorscheme slate
 
 syntax enable
 filetype indent on
