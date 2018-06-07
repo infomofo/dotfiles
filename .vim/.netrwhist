@@ -1,9 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =7
-let g:netrw_dirhist_1='/Users/wchiong/Code/devx/patreon_react_features'
-let g:netrw_dirhist_2='/Users/wchiong/Code/devx/patreon_react_features/app/pages/hello_world_will'
-let g:netrw_dirhist_3='/Users/wchiong/Code/devx/patreon_react_features/app/pages'
-let g:netrw_dirhist_4='/Users/wchiong/Code/devx/patreon_react_features'
-let g:netrw_dirhist_5='/Users/wchiong/Code/devx/patreon_react_features/app/pages'
-let g:netrw_dirhist_6='/Users/wchiong/Code/devx/patreon_react_features/app'
-let g:netrw_dirhist_7='/Users/wchiong/Code/devx/patreon_react_features'

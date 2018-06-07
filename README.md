@@ -2,13 +2,21 @@
 
 ## Setup
 
-Copy `vimrc` to `~/.vim/vimrc`.
+Symlink `.vim` to `~/.vim`.
 
-Copy .jrnl_config to `~/`. Make sure that `~/Journals` is your shared `jrnl`
+Symlink .jrnl_config to `~/`. Make sure that `~/Journals` is your shared `jrnl`
 repository.
 
 ## Link vimrc to .ideavimrc
 
 ```sh
 ln -s ~/.vim/vimrc ~/.ideavimrc
+```
+
+## To add new git modules
+
+```sh
+cd ~/Code/dotfiles
+git submodule add https://github.com/vim-airline/vim-airline.git .vim/pack/plugins/start/vim-airline
+git add .gitmodules .vim/pack/plugins/start/vim-airline
 ```

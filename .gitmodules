@@ -1,0 +1,6 @@
+[submodule ".vim/pack/plugins/start/vim-javascript"]
+	path = .vim/pack/plugins/start/vim-javascript
+	url = https://github.com/pangloss/vim-javascript
+[submodule ".vim/pack/plugins/start/vim-jsx"]
+	path = .vim/pack/plugins/start/vim-jsx
+	url = https://github.com/mxw/vim-jsx
