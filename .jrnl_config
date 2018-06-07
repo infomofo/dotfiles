@@ -8,7 +8,7 @@
   "timeformat": "%Y-%m-%d %H:%M",
   "highlight": true,
   "journals": {
-    "default": "/Users/will/Journal/jrnl.md",
+    "default": "~/Journal/jrnl.md",
     "developer": "~/Journal/developer.md",
     "dream": {
       "journal": "~/Journal/dream.md",
