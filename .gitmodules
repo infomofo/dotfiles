@@ -4,3 +4,6 @@
 [submodule ".vim/pack/plugins/start/vim-jsx"]
 	path = .vim/pack/plugins/start/vim-jsx
 	url = https://github.com/mxw/vim-jsx
+[submodule ".vim/pack/plugins/start/vim-liquid"]
+	path = .vim/pack/plugins/start/vim-liquid
+	url = git@github.com:tpope/vim-liquid.git
