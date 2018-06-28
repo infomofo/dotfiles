@@ -15,6 +15,7 @@
       "encrypt": true
     },
     "kit": "~/Journal/kit.md",
+    "patreon": "~/Journal/patreon.md",
     "personal": {
       "journal": "~/Journal/personal.md",
       "encrypt": true
