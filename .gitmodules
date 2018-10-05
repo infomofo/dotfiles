@@ -10,3 +10,6 @@
 [submodule ".vim/pack/plugins/start/vim-flake8"]
 	path = .vim/pack/plugins/start/vim-flake8
 	url = git@github.com:nvie/vim-flake8.git
+[submodule ".vim/pack/plugins/start/vim-markdown"]
+	path = .vim/pack/plugins/start/vim-markdown
+	url = https://github.com/plasticboy/vim-markdown
