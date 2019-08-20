@@ -58,3 +58,8 @@ nnoremap GR :grep '\b<cword>\b' %:p:h/*<CR>
 
 " vim-markdown
 let g:vim_markdown_frontmatter = 1
+
+" Don't offer to open certain files/directories
+set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.ico
+set wildignore+=*.pdf,*.psd
+set wildignore+=node_modules/*,bower_components/*

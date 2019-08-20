@@ -4,7 +4,7 @@
 
 Symlink `.vim` to `~/.vim`.
 
-Symlink .jrnl_config to `~/`. Make sure that `~/Journals` is your shared `jrnl`
+Symlink .jrnl_config to `~/`. Make sure that `~/Journal` is your shared `jrnl`
 repository.
 
 ## Link vimrc to .ideavimrc
