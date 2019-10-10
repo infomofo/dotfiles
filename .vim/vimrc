@@ -5,6 +5,7 @@ colorscheme slate
 
 syntax enable
 filetype indent on
+filetype plugin on
 
 set smarttab                    " make <tab> and <backspace> smarter
 set tabstop=2                   " tabstops of 2
