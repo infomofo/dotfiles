@@ -64,3 +64,7 @@ let g:vim_markdown_frontmatter = 1
 set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.ico
 set wildignore+=*.pdf,*.psd
 set wildignore+=node_modules/*,bower_components/*
+
+let g:vimwiki_list = [{'path': '~/vimwiki/',
+                      \ 'syntax': 'markdown', 'ext': '.md'}]
+" au BufRead,BufNewFile *.md setlocal textwidth=80
