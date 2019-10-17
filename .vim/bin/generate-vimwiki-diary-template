@@ -18,7 +18,9 @@ fi
 truncateddate="${datestamp%?}"
 
 cat <<-_EOT_
-# [[diary]] ${truncateddate}
+[[diary]]
+
+# ${truncateddate}
 
 ## Agenda
 
