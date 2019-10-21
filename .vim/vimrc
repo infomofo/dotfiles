@@ -81,9 +81,9 @@ let g:vimwiki_list = [wiki_1]
 let g:vimwiki_ext2syntax = {'.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
 augroup vimwikigit
   au!
-  au! BufRead ~/vimwiki/* :silent !git pull
+  au! BufRead ~/vimwiki/* silent execute "!git pull" | redraw!
   au! BufNewFile *vimwiki/diary/*.md :silent 0r !~/.vim/bin/generate-vimwiki-diary-template '%'
-  au! BufWritePost ~/vimwiki/* :silent !git add "%";git commit -m "Auto commit of %:t." "%"; git push > /dev/null&
+  au! BufWritePost ~/vimwiki/* silent execute "!git add '%';git commit -m 'Auto commit of %:t.' '%' >/dev/null; git push > /dev/null 2>&1&" | redraw!
 augroup END
 
 if &term =~ '^screen'
