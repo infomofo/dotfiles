@@ -6,10 +6,12 @@ Run `git submodule update --init`
 
 Symlink `.vim` to `~/.vim`.
 
-Symlink .jrnl_config to `~/`. Make sure that `~/Journal` is your shared `jrnl`
+Symlink `.tmux.conf` to `~/.tmux.conf`. To get copy-paste working from vim within tmux make sure you also `brew install reattach-to-user-namespace`.
+
+Symlink `.jrnl_config` to `~/`. Make sure that `~/Journal` is your shared `jrnl`
 repository.
 
-Symlink your vimiki folder to `~/vimwiki`
+Symlink your vimiki folder to `~/vimwiki` or clone it from github
 
 ## Link vimrc to .ideavimrc
 
