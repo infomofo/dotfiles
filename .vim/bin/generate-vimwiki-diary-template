@@ -26,7 +26,7 @@ cat <<-_EOT_
 
 - [ ] Item
 
-## Spotify
+## Work
 
 - [ ] Item
 _EOT_
