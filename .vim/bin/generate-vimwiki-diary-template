@@ -3,16 +3,23 @@
 # Output a vimwiki diary page template for a given diary page path
 # (which is expected to be a date in YYYY-MM-DD format).
 
+# Mac uses BSD date, Linux uses GNU date;
+# This detects if the user is using a BSD date, and assumes that they have gdate installed
+DATECMD="date"
+if ! date --version >/dev/null 2>&1 ; then
+  DATECMD="gdate"
+fi
+
 if [ ! -z "$1" ]; then
   # Take the basename of the file passed in, i.e. something like
   # /home/wchiong/vimwiki/diary/2019-01-01.md, slice off the extension,
   # and treat it as a seed date:
   date="$(basename -s .md "$1")"
   #datestamp="$(date -j -f "%Y-%m-%d" "$date" +"%m.%d %a")"c
-  datestamp="$(date -d "$date" +"%m.%d %a")"
+  datestamp="$($DATECMD -d "$date" +"%m.%d %a")"
 else
   # No filename given, nothing to work with, just use today:
-  datestamp="$(date +"%m.%d %a")"
+  datestamp="$($DATECMD +"%m.%d %a")"
 fi
 
 # Remove the last letter because I'm weird
