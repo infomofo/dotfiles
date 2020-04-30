@@ -30,11 +30,32 @@ cat <<-_EOT_
 
 # ${truncateddate}
 
-## Agenda
+## [Agenda](../Schedule)
 
 - [ ] Item
 
-## Work
+## [Work](../bh)
 
 - [ ] Item
+
+## [Meals](../Cooking)
+- [ ] Breakfast: 
+- [ ] Lunch: 
+- [ ] Dinner:
+- [ ] Snacks: 
+- [ ] Drinks: 
+
+## [Goals](../Goals)
+
+- [ ] [Yoga](../Yoga)
+- [ ] [Latte Art](../Latte Art)
+- [ ] [Social](../Social)
+- [ ] [Sketching](../Sketching)
+- [ ] [Side Projects](../Side Projects)
+- [ ] [Media](../Media)
+- [ ] [Gaming](../Gaming)
+- [ ] [Reading](../Reading)
+
+## [Thoughts](../Thoughts)/[Mindmap](../Mindmap)
+
 _EOT_
