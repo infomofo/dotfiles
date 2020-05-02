@@ -19,6 +19,7 @@ set wildcharm=<TAB>
 set lazyredraw          " redraw only when we need to.
 set showmatch           " highlight matching [{()}]
 set autochdir           " automatically change directory to local path for the purpose of autocompletion
+set belloff=all
 
 set clipboard=unnamed
 set autoindent smartindent      " turn on auto/smart indenting
