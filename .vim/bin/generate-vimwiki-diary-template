@@ -15,15 +15,30 @@ if [ ! -z "$1" ]; then
   # /home/wchiong/vimwiki/diary/2019-01-01.md, slice off the extension,
   # and treat it as a seed date:
   date="$(basename -s .md "$1")"
-  #datestamp="$(date -j -f "%Y-%m-%d" "$date" +"%m.%d %a")"c
   datestamp="$($DATECMD -d "$date" +"%m.%d %a")"
+  weekday="$($DATECMD -d "$date" +"%a")"
 else
   # No filename given, nothing to work with, just use today:
   datestamp="$($DATECMD +"%m.%d %a")"
+  weekday="$($DATECMD +"%a")"
 fi
 
 # Remove the last letter because I'm weird
 truncateddate="${datestamp%?}"
+
+case $weekday in
+  "Sun") weekdaytask="- [ ] Wash Sheets
+- [ ] Vacuum Couch and Bed";;
+  "Mon") weekdaytask="- [ ] Sanitize Sponges and clean Sink";;
+  "Tue") weekdaytask="- [ ] Clean Fridge
+- [ ] Clean Mirrors\n- [ ] Clean Microwave";;
+  "Wed") weekdaytask="- [ ] Mop";;
+  "Thu") weekdaytask="- [ ] Clean Toilet";;
+  "Fri") weekdaytask="- [ ] Wash Towels";;
+  "Sat") weekdaytask="- [ ] Dust Light Fixtures
+- [ ] Dust Furniture
+- [ ] Do One Monthly Task from [[../Schedule]]";;
+esac
 
 cat <<-_EOT_
 [[diary]]
@@ -32,6 +47,7 @@ cat <<-_EOT_
 
 ## [Agenda](../Schedule)
 
+$weekdaytask
 - [ ] Item
 
 ## [Work](../bh)
