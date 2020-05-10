@@ -88,3 +88,6 @@ if &term =~ '^screen'
   execute "set <xLeft>=\e[1;*D"
 endif
 let g:vimwiki_listsyms = ' .oOx'
+
+au FileType html,php,markdown,mmd,md,text,mail,gitcommit
+    \ runtime macros/emoji-ab.vim
