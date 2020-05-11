@@ -15,13 +15,14 @@ if [ ! -z "$1" ]; then
   # /home/wchiong/vimwiki/diary/2019-01-01.md, slice off the extension,
   # and treat it as a seed date:
   date="$(basename -s .md "$1")"
-  datestamp="$($DATECMD -d "$date" +"%m.%d %a")"
-  weekday="$($DATECMD -d "$date" +"%a")"
+  dateepoch="$($DATECMD -d "$date" +"%s")"
 else
   # No filename given, nothing to work with, just use today:
-  datestamp="$($DATECMD +"%m.%d %a")"
-  weekday="$($DATECMD +"%a")"
+  dateepoch="$($DATECMD +"%s")"
 fi
+
+datestamp="$($DATECMD --date="@$dateepoch" +"%m.%d %a")"
+weekday="$($DATECMD --date="@$dateepoch" +"%a")"
 
 # Remove the last letter because I'm weird
 truncateddate="${datestamp%?}"
