@@ -23,6 +23,15 @@ fi
 
 datestamp="$($DATECMD --date="@$dateepoch" +"%m.%d %a")"
 weekday="$($DATECMD --date="@$dateepoch" +"%a")"
+weeknum="$($DATECMD --date="@$dateepoch" +"%U")"
+weekmod=$(( weeknum % 2 ))
+
+case $weekmod in
+    "0") weektask="- [ ] Clean Laundry";;
+    "2") weektask="- [ ] Clean Dishwasher";;
+    "3") weektask="- [ ] Clean Vacuums";;
+    "4") weektask="- [ ] Dust Furniture and Light Fixtures";;
+esac
 
 # Remove the last letter because I'm weird
 truncateddate="${datestamp%?}"
@@ -32,12 +41,12 @@ case $weekday in
 - [ ] Vacuum Couch and Bed";;
   "Mon") weekdaytask="- [ ] Sanitize Sponges and clean Sink";;
   "Tue") weekdaytask="- [ ] Clean Fridge
-- [ ] Clean Mirrors\n- [ ] Clean Microwave";;
+- [ ] Clean Mirrors
+- [ ] Clean Microwave";;
   "Wed") weekdaytask="- [ ] Mop";;
   "Thu") weekdaytask="- [ ] Clean Toilet";;
   "Fri") weekdaytask="- [ ] Wash Towels";;
-  "Sat") weekdaytask="- [ ] Dust Light Fixtures
-- [ ] Dust Furniture
+  "Sat") weekdaytask="$weektask
 - [ ] Do One Monthly Task from [[../Schedule]]";;
 esac
 
