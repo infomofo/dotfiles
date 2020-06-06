@@ -46,8 +46,7 @@ case $weekday in
   "Wed") weekdaytask="- [ ] Mop";;
   "Thu") weekdaytask="- [ ] Clean Toilet";;
   "Fri") weekdaytask="- [ ] Wash Towels";;
-  "Sat") weekdaytask="$weektask
-- [ ] Do One Monthly Task from [[../Schedule]]";;
+  "Sat") weekdaytask="$weektask";;
 esac
 
 cat <<-_EOT_
@@ -65,8 +64,8 @@ $weekdaytask
 - [ ] Item
 
 ## [Meals](../Cooking)
-- [ ] Breakfast: 
-- [ ] Lunch: 
+- [ ] Breakfast:
+- [ ] Lunch:
 - [ ] Dinner:
 
 ## [Goals](../Goals)
