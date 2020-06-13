@@ -72,8 +72,8 @@ cat <<-_EOT_
 $weekdaytask
 
 ## [Meals](../Cooking)
-- [ ] Breakfast: 
-- [ ] Lunch: 
+- [ ] Breakfast:
+- [ ] Lunch:
 - [ ] Dinner:
 
 ## [Goals](../Goals)
