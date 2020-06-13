@@ -28,26 +28,37 @@ weekmod=$(( weeknum % 2 ))
 
 case $weekmod in
     "0") weektask="- [ ] Clean Laundry";;
+    "1") weektask="- [ ] Clean Vacuums";;
     "2") weektask="- [ ] Clean Dishwasher";;
-    "3") weektask="- [ ] Clean Vacuums";;
-    "4") weektask="- [ ] Dust Furniture and Light Fixtures";;
+    "3") weektask="- [ ] Dust Furniture and Light Fixtures";;
 esac
 
 # Remove the last letter because I'm weird
 truncateddate="${datestamp%?}"
 
+WORKSECTION="
+
+## [Work](../bh)
+
+- [ ] Item
+"
+
 case $weekday in
   "Sun") weekdaytask="- [ ] Wash Sheets
 - [ ] Vacuum Couch and Bed";;
-  "Mon") weekdaytask="- [ ] Sanitize Sponges and clean Sink";;
+  "Mon") weekdaytask="- [ ] Sanitize Sponges and clean Sink
+$WORKSECTION";;
   "Tue") weekdaytask="- [ ] Clean Fridge
 - [ ] Clean Mirrors
-- [ ] Clean Microwave";;
-  "Wed") weekdaytask="- [ ] Mop";;
-  "Thu") weekdaytask="- [ ] Clean Toilet";;
-  "Fri") weekdaytask="- [ ] Wash Towels";;
-  "Sat") weekdaytask="$weektask
-- [ ] Do One Monthly Task from [[../Schedule]]";;
+- [ ] Clean Microwave
+$WORKSECTION";;
+  "Wed") weekdaytask="- [ ] Mop
+$WORKSECTION";;
+  "Thu") weekdaytask="- [ ] Clean Toilet
+$WORKSECTION";;
+  "Fri") weekdaytask="- [ ] Wash Towels
+$WORKSECTION";;
+  "Sat") weekdaytask="$weektask";;
 esac
 
 cat <<-_EOT_
@@ -57,12 +68,8 @@ cat <<-_EOT_
 
 ## [Agenda](../Schedule)
 
+- [ ] Item
 $weekdaytask
-- [ ] Item
-
-## [Work](../bh)
-
-- [ ] Item
 
 ## [Meals](../Cooking)
 - [ ] Breakfast: 
