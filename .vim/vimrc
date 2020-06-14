@@ -91,3 +91,7 @@ let g:vimwiki_listsyms = ' .oOx'
 
 au FileType html,php,markdown,mmd,md,text,mail,gitcommit
     \ runtime macros/emoji-ab.vim
+
+" vim-prettier
+packloadall
+let g:prettier#autoformat_require_pragma = 0

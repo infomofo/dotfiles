@@ -22,3 +22,6 @@
 [submodule ".vim/pack/plugins/start/vim-emoji-ab"]
 	path = .vim/pack/plugins/start/vim-emoji-ab
 	url = https://gitlab.com/gi1242/vim-emoji-ab.git
+[submodule ".vim/pack/plugins/start/vim-prettier"]
+	path = .vim/pack/plugins/start/vim-prettier
+	url = https://github.com/prettier/vim-prettier
