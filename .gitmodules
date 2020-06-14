@@ -10,3 +10,6 @@
 [submodule ".vim/pack/plugins/start/vim-prettier"]
 	path = .vim/pack/plugins/start/vim-prettier
 	url = https://github.com/prettier/vim-prettier
+[submodule ".vim/pack/plugins/start/vim-polyglot"]
+	path = .vim/pack/plugins/start/vim-polyglot
+	url = https://github.com/sheerun/vim-polyglot
