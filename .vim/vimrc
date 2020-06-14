@@ -3,7 +3,7 @@
 " COLORS
 colorscheme slate
 
-syntax enable
+syntax on
 filetype indent on
 filetype plugin on
 

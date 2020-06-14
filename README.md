@@ -1,4 +1,4 @@
- Rq# dotfiles
+# dotfiles
 
 ## Setup
 
@@ -20,7 +20,7 @@ ln -s ~/.vim/vimrc ~/.ideavimrc
 
 ```sh
 cd ~/Code/dotfiles
-git submodule add https://github.com/vim-airline/vim-airline.git .vim/pack/plugins/start/vim-airline
+git submodule add --depth 1 -- https://github.com/vim-airline/vim-airline.git .vim/pack/plugins/start/vim-airline
 git add .gitmodules .vim/pack/plugins/start/vim-airline
 ```
 
