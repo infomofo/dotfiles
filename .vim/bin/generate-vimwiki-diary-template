@@ -54,7 +54,8 @@ $WORKSECTION";;
 $WORKSECTION";;
   "Wed") weekdaytask="- [ ] Mop
 $WORKSECTION";;
-  "Thu") weekdaytask="- [ ] Clean Toilet
+  "Thu") weekdaytask="- [ ] Make Farm to People Selection
+- [ ] Clean Toilet
 $WORKSECTION";;
   "Fri") weekdaytask="- [ ] Wash Towels
 $WORKSECTION";;
