@@ -37,7 +37,6 @@ esac
 truncateddate="${datestamp%?}"
 
 WORKSECTION="
-
 ## [Work](../bh)
 
 - [ ] Item
@@ -69,10 +68,9 @@ cat <<-_EOT_
 
 ## [Agenda](../Schedule)
 
-- [ ] Item
 $weekdaytask
-
 ## [Meals](../Cooking)
+
 - [ ] Breakfast:
 - [ ] Lunch:
 - [ ] Dinner:
