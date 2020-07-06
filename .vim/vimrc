@@ -95,3 +95,8 @@ au FileType html,php,markdown,mmd,md,text,mail,gitcommit
 " vim-prettier
 packloadall
 let g:prettier#autoformat_require_pragma = 0
+
+" ctags
+set tags=~/mytags
+
+

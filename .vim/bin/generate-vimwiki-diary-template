@@ -37,6 +37,7 @@ esac
 truncateddate="${datestamp%?}"
 
 WORKSECTION="
+
 ## [Work](../bh)
 
 - [ ] Item
@@ -84,6 +85,7 @@ $weekdaytask
 - [ ] [Sketching](../Sketching)
 - [ ] [Side Projects](../Side Projects)
 - [ ] [Reading](../Reading)
+- [ ] [Guitar](../Guitar)
 
 ## [Thoughts](../Thoughts)/[Mindmap](../Mindmap)
 
