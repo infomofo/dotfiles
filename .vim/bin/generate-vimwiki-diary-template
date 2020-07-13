@@ -40,8 +40,7 @@ WORKSECTION="
 
 ## [Work](../bh)
 
-- [ ] Item
-"
+- [ ] Item "
 
 case $weekday in
   "Sun") weekdaytask="- [ ] Wash Sheets
@@ -70,6 +69,7 @@ cat <<-_EOT_
 ## [Agenda](../Schedule)
 
 $weekdaytask
+
 ## [Meals](../Cooking)
 
 - [ ] Breakfast:
