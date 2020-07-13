@@ -37,7 +37,6 @@ esac
 truncateddate="${datestamp%?}"
 
 WORKSECTION="
-
 ## [Work](../bh)
 
 - [ ] Item "
