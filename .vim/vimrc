@@ -18,7 +18,7 @@ set wildmenu            " visual autocomplete for command menu
 set wildcharm=<TAB>
 set lazyredraw          " redraw only when we need to.
 set showmatch           " highlight matching [{()}]
-set autochdir           " automatically change directory to local path for the purpose of autocompletion
+set noautochdir
 set belloff=all
 set autoread            " Reload files when they're changed on disk
 
@@ -86,6 +86,4 @@ au FocusGained,BufEnter * :checktime
 " vim-prettier
 let g:prettier#autoformat_require_pragma = 0
 
-" ctags
-set tags=~/mytags
 
