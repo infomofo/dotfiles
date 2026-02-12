@@ -18,7 +18,7 @@ set wildmenu            " visual autocomplete for command menu
 set wildcharm=<TAB>
 set lazyredraw          " redraw only when we need to.
 set showmatch           " highlight matching [{()}]
-set autochdir           " automatically change directory to local path for the purpose of autocompletion
+set noautochdir
 set belloff=all
 set autoread            " Reload files when they're changed on disk
 
@@ -33,18 +33,12 @@ set updatecount=100             " write swap file to disk every 100 chars
 set ignorecase " ignore case
 set smartcase  " match case if a capital letter is present in the regexp
 set hlsearch   " highlight matched patterns
-" map <Leader>/ :nohlsearch<cr>
 set incsearch  " highlight search result as you type it
 
 " finding
 set path+=**
 
-" spell check
-"map <Leader>ss :setlocal spell!<cr>
-
-set nocompatible   " Disable vi-compatibility
 set laststatus=2   " Always show the statusline
-set encoding=utf-8 " Necessary to show unicode glyphs
 
 set list!
 set listchars=tab:▸\ ,trail:•,extends:»,precedes:« " whitespace and trailing spaces
@@ -52,8 +46,6 @@ set listchars=tab:▸\ ,trail:•,extends:»,precedes:« " whitespace and traili
 set directory=/tmp "sets the swap (.swp) file directory
 
 set mouse=a " allow mouse scrolling
-
-set cm=blowfish2     " encryption cypher for journaling - best (requires Vim version 7.4.399 or higher)
 
 " bind K to grep word under cursor
 nnoremap gr :grep <cword> *<CR>
@@ -67,7 +59,7 @@ let g:vim_markdown_frontmatter = 1
 " Don't offer to open certain files/directories
 set wildignore+=*.bmp,*.ico
 set wildignore+=*.pdf,*.psd
-set wildignore+=node_modules/*,bower_components/*
+set wildignore+=node_modules/*
 
 let wiki_1 = {}
 let wiki_1.path = '~/Library/Mobile Documents/iCloud~md~obsidian/Documents/vault/'
@@ -92,9 +84,6 @@ au FileType html,php,markdown,mmd,md,text,mail,gitcommit
 au FocusGained,BufEnter * :checktime
 
 " vim-prettier
-packloadall
 let g:prettier#autoformat_require_pragma = 0
 
-" ctags
-set tags=~/mytags
 
