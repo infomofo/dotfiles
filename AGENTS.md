@@ -63,7 +63,6 @@ git pull --recurse-submodules
 - **Symlinks**: Config files are symlinked from this repo into `~`. Don't assume they're at `~` directly.
 - **vimrc style**: Settings use inline comments for explanation. Keep it flat and simple - no plugin managers, no complex abstractions.
 - **tmux**: Uses vi keybindings and integrates with macOS clipboard natively (pbcopy/pbpaste). No extra tools needed on modern macOS.
-- **.gitignore**: Only `.vim/.netrwhist` is ignored. Keep it minimal.
 
 ## Things to Avoid
 
