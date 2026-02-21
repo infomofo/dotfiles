@@ -1,0 +1,35 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "tmux set-option -w automatic-rename-format '#{?#{m:[0-9]*.[0-9]*.[0-9]*,#{pane_current_command}},🔄 #{b:pane_current_path},#{pane_current_command}:#{b:pane_current_path}}' 2>/dev/null; true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo stop >> /tmp/claude-hook-test; tmux set-option -wu automatic-rename-format 2>/dev/null; true"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "tmux set-option -w automatic-rename-format '#{?#{m:[0-9]*.[0-9]*.[0-9]*,#{pane_current_command}},⚠️ #{b:pane_current_path},#{pane_current_command}:#{b:pane_current_path}}' 2>/dev/null; true"
+          }
+        ]
+      }
+    ]
+  }
+}

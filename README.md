@@ -17,10 +17,20 @@ git submodule update --init --recursive
 ### 2. Create symlinks
 
 ```sh
+# Vim and tmux
 ln -s ~/Code/dotfiles/.vim ~/.vim
 ln -s ~/Code/dotfiles/.tmux.conf ~/.tmux.conf
 ln -s ~/.vim/vimrc ~/.ideavimrc  # optional, for IntelliJ IDEA
+
+# Claude Code (create ~/.claude first if it doesn't exist)
+mkdir -p ~/.claude
+ln -sf ~/Code/dotfiles/claude/settings.json ~/.claude/settings.json
+ln -sf ~/Code/dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
 ```
+
+> **Note:** Only specific Claude Code files are symlinked — not the whole `~/.claude/`
+> directory. Claude Code stores machine-local runtime data there (history, caches,
+> session state, auth tokens) that should not be shared.
 
 ### 3. Install prerequisites
 
@@ -51,6 +61,7 @@ vimwiki is configured to use an Obsidian vault at `~/Library/Mobile Documents/iC
 - **Vim 9.0.0185+** (for copilot.vim)
 - **Node.js 22+** (for copilot.vim)
 - **tmux** (copy-paste works natively on modern macOS, no extra tools needed)
+- **Claude Code** (optional — `settings.json` hooks integrate with tmux for window naming)
 
 ## To add new vim plugins
 
