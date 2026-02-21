@@ -1,0 +1,35 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "DIR=$(tmux display-message -p '#{b:pane_current_path}' 2>/dev/null); tmux set-option -w automatic-rename off 2>/dev/null; tmux rename-window \"🔄 ${DIR:-?}\" 2>/dev/null; true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "DIR=$(tmux display-message -p '#{b:pane_current_path}' 2>/dev/null); tmux set-option -w automatic-rename off 2>/dev/null; tmux rename-window \"🤖 ${DIR:-?}\" 2>/dev/null; true"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "DIR=$(tmux display-message -p '#{b:pane_current_path}' 2>/dev/null); tmux set-option -w automatic-rename off 2>/dev/null; tmux rename-window \"⚠️ ${DIR:-?}\" 2>/dev/null; true"
+          }
+        ]
+      }
+    ]
+  }
+}

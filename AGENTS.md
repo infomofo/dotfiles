@@ -7,13 +7,22 @@ Personal dotfiles for vim, tmux, and SSH configuration. Symlinked into `~` for u
 ## Structure
 
 ```
-.vim/vimrc          - Vim configuration
+.vim/vimrc                - Vim configuration
 .vim/pack/plugins/start/  - Vim plugins (git submodules)
-.vim/bin/           - Utility scripts
-.vim/after/         - Vim after-load config (syntax overrides)
-.tmux.conf          - Tmux configuration
-.ssh/config         - SSH configuration template
+.vim/bin/                 - Utility scripts
+.vim/after/               - Vim after-load config (syntax overrides)
+.tmux.conf                - Tmux configuration
+.ssh/config               - SSH configuration template
+claude/settings.json      - Claude Code global settings (hooks for tmux integration)
+claude/CLAUDE.md          - Claude Code global instructions (behavior preferences)
+.claude/settings.local.json - Claude Code project-level permissions (this repo only)
 ```
+
+### Claude Code file layout
+
+Files in `claude/` (no dot) are **global** config — symlinked into `~/.claude/` on each machine. Files in `.claude/` (with dot) are **project-level** settings scoped to this repo.
+
+Only `settings.json` and `CLAUDE.md` are shared. Machine-local files like `settings.local.json`, `history.jsonl`, caches, and session state stay in `~/.claude/` untracked.
 
 ## Vim Plugin Management
 
@@ -63,6 +72,7 @@ git pull --recurse-submodules
 - **Symlinks**: Config files are symlinked from this repo into `~`. Don't assume they're at `~` directly.
 - **vimrc style**: Settings use inline comments for explanation. Keep it flat and simple - no plugin managers, no complex abstractions.
 - **tmux**: Uses vi keybindings and integrates with macOS clipboard natively (pbcopy/pbpaste). No extra tools needed on modern macOS.
+- **Claude Code**: Global config lives in `claude/` (not `.claude/`). Only share files that are portable across machines — no auth tokens, local permissions, or runtime state.
 
 ## Things to Avoid
 
