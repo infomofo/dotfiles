@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "DIR=$(tmux display-message -p '#{b:pane_current_path}' 2>/dev/null); tmux set-option -w automatic-rename off 2>/dev/null; tmux rename-window \"🔄 ${DIR:-?}\" 2>/dev/null; true"
+            "command": "tmux set-option -w automatic-rename-format '#{?#{m:[0-9]*.[0-9]*.[0-9]*,#{pane_current_command}},🔄 #{b:pane_current_path},#{pane_current_command}:#{b:pane_current_path}}' 2>/dev/null; true"
           }
         ]
       }
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "DIR=$(tmux display-message -p '#{b:pane_current_path}' 2>/dev/null); tmux set-option -w automatic-rename off 2>/dev/null; tmux rename-window \"🤖 ${DIR:-?}\" 2>/dev/null; true"
+            "command": "echo stop >> /tmp/claude-hook-test; tmux set-option -wu automatic-rename-format 2>/dev/null; true"
           }
         ]
       }
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "DIR=$(tmux display-message -p '#{b:pane_current_path}' 2>/dev/null); tmux set-option -w automatic-rename off 2>/dev/null; tmux rename-window \"⚠️ ${DIR:-?}\" 2>/dev/null; true"
+            "command": "tmux set-option -w automatic-rename-format '#{?#{m:[0-9]*.[0-9]*.[0-9]*,#{pane_current_command}},⚠️ #{b:pane_current_path},#{pane_current_command}:#{b:pane_current_path}}' 2>/dev/null; true"
           }
         ]
       }
