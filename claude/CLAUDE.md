@@ -4,6 +4,11 @@
 
 Before creating or updating a PR, run the project's lint and format checks and fix any issues before pushing. Check the Makefile, CI config, or README for the correct commands.
 
+## Testing Requirements
+
+- A PR that modifies logic must always include a test demonstrating the change is applied. This makes it easier for reviewers to verify the code is functional and correct.
+- When adding or updating tests, follow the existing test patterns in the project.
+
 ## Git Conventions
 
 - Never force push. Always push new commits instead.
