@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo stop >> /tmp/claude-hook-test; tmux set-option -wu automatic-rename-format 2>/dev/null; true"
+            "command": "tmux set-option -wu automatic-rename-format 2>/dev/null; true"
           }
         ]
       }
