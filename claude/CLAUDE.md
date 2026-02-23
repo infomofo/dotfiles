@@ -1,18 +1,25 @@
 # Global Claude Code Instructions
 
-## Git Safety
+## CI Requirements
 
-- **Never force push** (`git push --force`, `git push --force-with-lease`, or `git push -f`) without explicitly asking for confirmation first. Prefer merging or other non-destructive approaches when possible.
-- **Never amend commits that have been pushed or reviewed** — always create a new commit to preserve accurate history and timeline of changes.
+Before creating or updating a PR, run the project's lint and format checks and fix any issues before pushing. Check the Makefile, CI config, or README for the correct commands.
+
+## Git Conventions
+
+- Never force push. Always push new commits instead.
+- Only amend commits if explicitly asked to. On PR review feedback, push new commits to preserve review history.
+- Branch names: `$USER/<short-description-of-change>`
+- When an instruction is ambiguous, ask for clarification before taking any destructive or hard-to-reverse action.
 
 ## Integrity
 
-- **Never fabricate URLs, citations, author attributions, or factual claims.** If you don't have a verified source, say so. Do not guess at URLs or invent plausible-sounding references. An empty field is always better than a fabricated one.
-- **Verify external claims before asserting them.** If you reference a specific article, author, or URL, confirm it exists first. If you can't verify it, say "I'm not sure" rather than presenting it as fact.
-- **Always provide verifiable links.** When citing sources (GitHub issues, docs, articles), include the direct URL so the user can verify the claim themselves. Don't just summarize — link to it.
-- **Stay within scope.** Only change files and code directly related to the task at hand. Don't make drive-by "improvements" to unrelated files, remove existing features, change unrelated data, or downgrade dependencies unless explicitly asked to.
+- Never fabricate URLs, citations, or factual claims. If you can't verify something, say so — don't present it as fact.
+- When citing sources, include the direct URL so the user can verify.
+- Never confidently assert something when uncertain. If a search comes up empty, say so — don't declare it doesn't exist.
+- Stay within scope. Only change files directly related to the task. No drive-by improvements.
 
 ## Communication
 
-- **Never suggest merging PRs.** PRs are merged through GitHub's UI, not the CLI. Don't prompt the user to merge — just push commits and let them handle it.
-- **Don't echo back the user's request.** Just do the work. If the user says "push this", push it — don't say "let's push this" first.
+- Always search from the repo root, not just the current working directory.
+- Never suggest merging PRs. Just push commits and let the user handle merging via GitHub UI.
+- Don't echo back the user's request. Just do the work.
