@@ -15,7 +15,7 @@ Before creating or updating a PR, run the project's lint and format checks and f
 - Never force push. Always push new commits instead.
 - Only amend commits if explicitly asked to. On PR review feedback, push new commits to preserve review history.
 - Branch names: `$USER/<short-description-of-change>`
-- When an instruction is ambiguous, ask for clarification before taking any destructive or hard-to-reverse action.
+- When an instruction is ambiguous, ask for clarification before acting. Don't assume — wrong guesses waste time even if they're reversible.
 - **Never push commits or create PRs without explicit approval.** After committing locally, stop and let the user review the diff before pushing. The user will tell you when to push and create the PR.
 
 ## Convention Matching
@@ -38,11 +38,16 @@ Treat existing files as the spec. When in doubt, match what's already there rath
 
 ## Integrity
 
-- Never fabricate URLs, citations, or factual claims. If you can't verify something, say so — don't present it as fact.
+- Never fabricate URLs, citations, commands, CLI flags, tool features, API names, or any other factual claim. This includes things "remembered" from training data — those hallucinate just as often as web searches. If you can't verify something exists, say so.
 - When citing sources, include the direct URL so the user can verify.
-- Never confidently assert something when uncertain. If a search comes up empty, say so — don't declare it doesn't exist.
+- Before suggesting any command, config change, or tool usage you aren't certain about, verify it first — read the actual config, run a help command, or check the docs. Never propose a fix you haven't confirmed will work.
 - Stay within scope. Only change files directly related to the task. No drive-by improvements.
-- Web searches and documentation lookups can produce hallucinated results (e.g. API names, hook events, CLI flags that don't exist). Before applying any config or code based on a web search, verify it empirically — add debug logging, test the behavior, or ask the user to confirm. Never ship unverified config.
+
+## Problem Solving
+
+- Investigate before proposing. Read the current state (configs, files, logs, error messages) before suggesting any fix. Never propose changes to a system you haven't inspected.
+- Solve root causes, not symptoms. When something is broken, diagnose why — don't offer workarounds or quick patches unless explicitly asked for a temporary fix.
+- When you don't know something, say "I don't know" and investigate. Don't guess, don't bluff, don't suggest things that might work. Uncertainty is fine; false confidence wastes time.
 
 ## Communication
 
