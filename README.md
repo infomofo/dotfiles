@@ -26,11 +26,15 @@ ln -s ~/.vim/vimrc ~/.ideavimrc  # optional, for IntelliJ IDEA
 mkdir -p ~/.claude
 ln -sf ~/Code/dotfiles/claude/settings.json ~/.claude/settings.json
 ln -sf ~/Code/dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
+
+# GitHub Copilot CLI (create ~/.copilot first if it doesn't exist)
+mkdir -p ~/.copilot
+ln -sf ~/Code/dotfiles/copilot/copilot-instructions.md ~/.copilot/copilot-instructions.md
 ```
 
-> **Note:** Only specific Claude Code files are symlinked — not the whole `~/.claude/`
-> directory. Claude Code stores machine-local runtime data there (history, caches,
-> session state, auth tokens) that should not be shared.
+> **Note:** Only specific Claude Code and Copilot CLI files are symlinked — not the whole
+> `~/.claude/` or `~/.copilot/` directories. Both tools store machine-local runtime data
+> (history, caches, session state, auth tokens) that should not be shared.
 
 ### 3. Install prerequisites
 
