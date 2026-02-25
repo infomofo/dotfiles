@@ -63,3 +63,28 @@ Before writing any new code or files, read 2-3 existing examples of the same typ
 - Don't echo back the user's request. Just do the work.
 - Don't suggest follow-up actions or ask "would you like me to..." — just finish.
 - Never suggest merging PRs. Push commits and let the user handle merging.
+
+## DevLoop (Local Dev Server Workflow)
+
+For UI, styling, or layout work where visual verification matters. Automated tests alone are not sufficient for visual/UX changes.
+
+**When to start:**
+1. The human says something like "let's devloop this" or "let's devloop on this", OR
+2. The approved plan includes a DevLoop/verification section with URLs to check — start **automatically** after implementing, don't wait to be asked
+
+**Spin Up:**
+- Check for an existing dev server on the expected port (e.g., `lsof -i :<port> -t`)
+- If already running with the same framework, reuse it
+- Otherwise, start the dev server as a background/async process
+
+**Iterate:**
+- Make small, incremental changes
+- Most frameworks hot-reload; config files typically require a server restart
+- Tell the human which URL to check and what changed
+- Wait for feedback before the next iteration
+
+**Ship It:** When the human approves (e.g., "commit", "ship it", "looks good"):
+1. Run tests and build to verify everything works
+2. Stop the dev server (kill the process or stop the async task)
+3. Commit (and push/PR only if explicitly requested)
+4. If the human corrected a pattern during the loop, update AGENTS.md
