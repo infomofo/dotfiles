@@ -37,6 +37,26 @@ Before writing any new code or files, read 2-3 existing examples of the same typ
 - Extract common patterns (DRY). If the same expression appears in multiple branches with one token different, factor out the shared structure.
 - SQL: List columns explicitly — avoid `SELECT *` and `SELECT table.*`. Exception: unwieldy column lists.
 
+## Tool Preferences
+
+- Prefer CLI tools (`acli`, `bq`, `gh`, etc.) over MCP tools. CLI text output is far more token-efficient than MCP JSON responses.
+- Use `--fields` / format flags to limit output to only what's needed.
+- Only use `--json` when structured data is required for further processing.
+
+## Jira (acli)
+
+- View: `acli jira workitem view <KEY>`
+- Search: `acli jira workitem search --jql "<query>"`
+- Create: `acli jira workitem create --project <KEY> --type <type> --summary "<text>"`
+- Edit: `acli jira workitem edit --key <KEY> --summary "<text>"`
+- Transition: `acli jira workitem transition --key <KEY> --status "<status>"`
+- Comment: `acli jira workitem comment create --key <KEY> --body "<text>"`
+- Limit output: `--fields "key,summary,status"`, `--csv` for tabular data
+
+## PR Reviews
+
+- When reviewing PR comments, only look at **unresolved/open** threads by default. Ignore resolved comments unless explicitly asked to review them.
+
 ## Communication
 
 - Search from the repo root, not just the current working directory.
