@@ -59,7 +59,6 @@ git pull --recurse-submodules
 
 | Plugin | Purpose |
 |--------|---------|
-| copilot.vim | GitHub Copilot AI completions |
 | editorconfig-vim | EditorConfig support |
 | vim-emoji-ab | Emoji abbreviations in markdown/mail |
 | vim-polyglot | Syntax highlighting for 100+ languages |

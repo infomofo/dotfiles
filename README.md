@@ -40,30 +40,12 @@ ln -sf ~/Code/dotfiles/copilot/copilot-instructions.md ~/.copilot/copilot-instru
 
 - **Node.js 22+** (required by GitHub Copilot)
 
-### 4. Set up GitHub Copilot
-
-Open vim and run:
-
-```
-:Copilot setup
-```
-
-Follow the prompts to authenticate with your GitHub account. Verify with `:Copilot status`.
-
-If you use a Node.js version manager (nvm, nodenv, etc.), you may need to add this to `.vim/vimrc`:
-
-```vim
-let g:copilot_node_command = '/path/to/node'
-```
-
-### 5. Set up vimwiki (optional)
+### 4. Set up vimwiki (optional)
 
 vimwiki is configured to use an Obsidian vault at `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/vault/`. Make sure this path exists if you use Obsidian, or update the path in `.vim/vimrc`.
 
 ## Requirements
 
-- **Vim 9.0.0185+** (for copilot.vim)
-- **Node.js 22+** (for copilot.vim)
 - **tmux** (copy-paste works natively on modern macOS, no extra tools needed)
 - **Claude Code** (optional — `settings.json` hooks integrate with tmux for window naming)
 

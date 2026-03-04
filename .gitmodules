@@ -13,6 +13,3 @@
 [submodule ".vim/pack/plugins/start/vim-polyglot"]
 	path = .vim/pack/plugins/start/vim-polyglot
 	url = https://github.com/sheerun/vim-polyglot
-[submodule ".vim/pack/plugins/start/copilot.vim"]
-	path = .vim/pack/plugins/start/copilot.vim
-	url = https://github.com/github/copilot.vim.git
