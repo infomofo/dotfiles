@@ -7,6 +7,8 @@ Personal dotfiles for vim, tmux, and SSH configuration. Symlinked into `~` for u
 ## Structure
 
 ```
+.zprofile                 - Zsh login shell config (PATH, env vars, sources ~/.secrets)
+.zshrc                    - Zsh interactive shell config (NVM init)
 .vim/vimrc                - Vim configuration
 .vim/pack/plugins/start/  - Vim plugins (git submodules)
 .vim/bin/                 - Utility scripts
@@ -16,6 +18,7 @@ Personal dotfiles for vim, tmux, and SSH configuration. Symlinked into `~` for u
 claude/settings.json      - Claude Code global settings (hooks for tmux integration)
 claude/CLAUDE.md          - Claude Code global instructions (behavior preferences)
 .claude/settings.local.json - Claude Code project-level permissions (this repo only)
+setup.sh                  - Symlinks dotfiles into $HOME and hydrates ~/.secrets from Keychain
 ```
 
 ### Claude Code file layout
@@ -76,6 +79,6 @@ git pull --recurse-submodules
 ## Things to Avoid
 
 - Don't add plugin managers (vim-plug, Vundle, etc.) - native vim packages + submodules are used.
-- Don't add shell configs (zshrc, bashrc) - those are managed separately.
+- Shell config (`.zprofile`, `.zshrc`) lives in this repo. Secrets go in `~/.secrets` (not tracked).
 - Don't modify `.git/config` submodule entries directly; use `git submodule` commands.
 - Don't use SSH URLs for submodules.

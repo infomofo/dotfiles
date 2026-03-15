@@ -14,33 +14,49 @@ Or if already cloned:
 git submodule update --init --recursive
 ```
 
-### 2. Create symlinks
+### 2. Seed Keychain secrets
+
+The shell config sources `~/.secrets`, which is generated from macOS Keychain during setup.
+Seed each secret before running the setup script:
 
 ```sh
-# Vim and tmux
-ln -s ~/Code/dotfiles/.vim ~/.vim
-ln -s ~/Code/dotfiles/.tmux.conf ~/.tmux.conf
-ln -s ~/.vim/vimrc ~/.ideavimrc  # optional, for IntelliJ IDEA
-
-# Claude Code (create ~/.claude first if it doesn't exist)
-mkdir -p ~/.claude
-ln -sf ~/Code/dotfiles/claude/settings.json ~/.claude/settings.json
-ln -sf ~/Code/dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
-
-# GitHub Copilot CLI (create ~/.copilot first if it doesn't exist)
-mkdir -p ~/.copilot
-ln -sf ~/Code/dotfiles/copilot/copilot-instructions.md ~/.copilot/copilot-instructions.md
+security add-generic-password -s "FOODIMADE_CF_API_TOKEN" -a "$USER" -w "your-token" -U
+security add-generic-password -s "OPENAI_API_KEY" -a "$USER" -w "your-key" -U
 ```
+
+The login keychain does not sync via iCloud — secrets must be added per machine.
+
+### 3. Set up Google service account key
+
+The shell config expects a Google service account key at `~/.config/foodimade-sa-key.json`.
+Download the key from the
+[GCP Console](https://console.cloud.google.com/iam-admin/serviceaccounts) (project: foodimade)
+and copy it into place:
+
+```sh
+mkdir -p ~/.config
+cp /path/to/downloaded-key.json ~/.config/foodimade-sa-key.json
+chmod 600 ~/.config/foodimade-sa-key.json
+```
+
+### 4. Run setup script
+
+```sh
+bash ~/Code/dotfiles/setup.sh
+```
+
+This symlinks all dotfiles into `$HOME` (backing up any existing files) and hydrates
+`~/.secrets` from Keychain.
 
 > **Note:** Only specific Claude Code and Copilot CLI files are symlinked — not the whole
 > `~/.claude/` or `~/.copilot/` directories. Both tools store machine-local runtime data
 > (history, caches, session state, auth tokens) that should not be shared.
 
-### 3. Install prerequisites
+### 5. Install prerequisites
 
 - **Node.js 22+** (required by GitHub Copilot)
 
-### 4. Set up vimwiki (optional)
+### 6. Set up vimwiki (optional)
 
 vimwiki is configured to use an Obsidian vault at `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/vault/`. Make sure this path exists if you use Obsidian, or update the path in `.vim/vimrc`.
 
