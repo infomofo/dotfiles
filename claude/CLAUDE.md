@@ -23,12 +23,17 @@
 
 ## Git Conventions
 
-- Never force push. Always push new commits.
+- Never force push. Always push new commits. Use `git pull --no-rebase` (merge) to integrate upstream changes so that history is never rewritten and force push is never needed. If a rebase has already happened and the branch has diverged from origin, **stop and ask the user** — do not force push to "fix" it.
 - **Never push directly to main or master.** Always use a feature branch and PR, even for cherry-picks. The only exception is if the user explicitly says to push to main.
 - Only amend commits if explicitly asked. On PR review feedback, push new commits to preserve review history.
 - Branch names: `$USER/<short-description-of-change>`
-- **Never push commits or create PRs without explicit approval.** After committing locally, stop and let the user review the diff.
+- **The user must have a chance to review every change before it reaches origin.** After committing locally, stop and show the diff. Do not run `git push` or `gh pr create` until the user explicitly says to push. Note: requesting a PR (e.g., "open a PR", "let's PR this") counts as explicit approval to push — do not ask again.
 - **After resolving merge conflicts**, verify the resolved files are correct and run checks before committing. Don't blindly accept `--theirs` or `--ours`.
+
+## Following These Instructions
+
+- The rules in this file are **absolute unless the user explicitly overrides them in the current conversation**. "The situation requires it" is never a valid reason to break a rule — stop and ask instead.
+- When a command you're about to run would violate a rule (e.g., `--force`, `--force-with-lease`, `--amend`, pushing to main), do not run it. Explain the conflict and let the user decide.
 
 ## Convention Matching
 
