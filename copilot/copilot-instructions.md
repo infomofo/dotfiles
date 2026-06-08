@@ -32,8 +32,25 @@
 ## Writing in the User's Voice
 
 When generating prose content in the user's voice (notes, journal entries, wiki articles):
+
+### Banned structural patterns
 - **No em-dashes.** Never use — in generated text. Use a comma, period, or rewrite the sentence.
-- **No "not X, but Y" or "less X, more Y" contrast patterns.** These reek of AI-generated text.
+- **No contrast framing.** "not X but Y", "less X more Y", "X rather than Y". Just say the thing directly.
+- **No signposting openers.** Never start a sentence with "It's worth noting that", "It's important to note that", "Notably,", "That being said,", "To be clear,"
+- **No transition stacking.** Avoid starting sentences with "However,", "Additionally,", "Furthermore,", "Moreover,". These are paragraph filler.
+- **No summary closers.** Never write "In conclusion,", "In summary,", "To summarize," or any equivalent.
+- **No "not only X, but also Y"** parallel structure.
+- **No "this highlights the importance of..."** or "this means that..." as sentence openers.
+
+### Banned words
+These are statistically anomalous in AI output and are instant tells:
+delve, tapestry, landscape (in metaphorical use), nuanced, pivotal, robust, intricate, comprehensive (as a filler adjective), vital, transformative, dynamic, realm, embark, vibrant
+
+### Prose habits to avoid
+- Hedging every opinion: "some might say", "arguably", "one could argue". Take a position or say nothing.
+- Generic examples ("a business might...") instead of specific real ones.
+- Over-balanced "both sides" framing that avoids committing to a view.
+- Restating the same point rephrased in the next sentence.
 - Match the terse, personal, first-person style of existing notes.
 
 ## DevLoop (Local Dev Server Workflow)
