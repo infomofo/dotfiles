@@ -4,17 +4,18 @@
 
 - Never fabricate URLs, citations, commands, CLI flags, or any factual claim. If you can't verify it, say so.
 - Investigate before proposing. Read the current state (configs, files, logs, errors) before suggesting any fix.
-- Before suggesting any command or config change, verify it first — read the config, run a help command, or check the docs.
+- Before suggesting any command or config change, verify it first -- read the config, run a help command, or check the docs.
 - Solve root causes, not symptoms. Don't offer workarounds unless explicitly asked for a temporary fix.
 - When you don't know something, say "I don't know" and investigate. Uncertainty is fine; false confidence wastes time.
 - When an instruction is ambiguous, ask for clarification before acting.
 - Stay within scope. Only change files directly related to the task. No drive-by improvements.
-- When a change involves choosing between multiple valid options, present the options with tradeoffs and let the user decide before writing the code. Do not pick a default and push it — pause and ask.
+- When a change involves choosing between multiple valid options, present the options with tradeoffs and let the user decide before writing the code. Do not pick a default and push it -- pause and ask.
 
 ## Before Pushing
 
 - **Before pushing ANY commit** (including merge commits), run the project's test/lint/compilation checks locally and confirm they pass. Check the Makefile, CI config, or README for the correct commands. Never push a commit you haven't verified locally.
-- If a check fails due to an auth or environment issue (e.g., `invalid_grant`, expired credentials), try to fix it yourself first. For GCP, run `gcloud auth application-default login` directly. Only stop and ask the user if the self-fix doesn't work.
+- If a check fails due to an auth or environment issue (e.g., `invalid_grant`, expired credentials), run `gcloud auth application-default login` directly -- the user will complete the browser flow when prompted. Never bail out and tell the user to run auth commands themselves.
+- If a shell command hangs on an SSH passphrase prompt, run `ssh-add` directly -- the user will enter the passphrase when prompted. Don't ask the user to do it in a separate terminal.
 
 ## Testing
 
@@ -23,16 +24,29 @@
 
 ## Git Conventions
 
-- Never force push. Always push new commits. Use `git pull --no-rebase` (merge) to integrate upstream changes so that history is never rewritten and force push is never needed. If a rebase has already happened and the branch has diverged from origin, **stop and ask the user** — do not force push to "fix" it.
+- Never force push. If a branch has diverged from origin due to a rebase, stop and ask the user how to proceed. Do not unilaterally pick a resolution.
+- **Never delete remote branches or close PRs without explicit user approval.** Deleting a remote branch closes its associated PR and destroys review history. Always ask before running `git push origin --delete`, `gh pr close`, or any equivalent command.
 - **Never push directly to main or master.** Always use a feature branch and PR, even for cherry-picks. The only exception is if the user explicitly says to push to main.
 - Only amend commits if explicitly asked. On PR review feedback, push new commits to preserve review history.
 - Branch names: `$USER/<short-description-of-change>`
-- **The user must have a chance to review every change before it reaches origin.** After committing locally, stop and show the diff. Do not run `git push` or `gh pr create` until the user explicitly says to push. Note: requesting a PR (e.g., "open a PR", "let's PR this") counts as explicit approval to push — do not ask again.
+- **The user must have a chance to review every change before it reaches origin.** After committing locally, stop and show the diff. Do not run `git push` or `gh pr create` until the user explicitly says to push. Note: requesting a PR (e.g., "open a PR", "let's PR this") counts as explicit approval to push -- do not ask again.
 - **After resolving merge conflicts**, verify the resolved files are correct and run checks before committing. Don't blindly accept `--theirs` or `--ours`.
+
+## Before Creating a PR
+
+- **Always check what commits and files will be in the PR before creating it.** Run `git log origin/<base-branch>..HEAD --oneline` and `git diff origin/<base-branch>...HEAD --stat` to see exactly what the PR will contain. If there are commits or files unrelated to the current task, stop and fix the branch first (e.g., create the feature branch from `origin/<base-branch>` instead of the local branch, which may have unpushed commits).
+- Never assume the local branch is in sync with its remote. Always compare against `origin/<base-branch>`, not the local `<base-branch>`.
+
+## After Creating a PR
+
+- **Always verify the PR before presenting it to the user.** After `gh pr create`, immediately run `gh pr view <number> --json baseRefName,headRefName,files --jq '{base: .baseRefName, head: .headRefName, files: [.files[].path]}'` and confirm:
+  1. The base branch matches what the user requested (e.g., `main` vs `development`). Always pass `--base` explicitly to `gh pr create`.
+  2. The changed files are exactly the set expected -- no extra files, no missing files.
+- If anything is wrong, fix it before telling the user the PR is ready. Do not present a broken PR and hope they won't notice.
 
 ## Following These Instructions
 
-- The rules in this file are **absolute unless the user explicitly overrides them in the current conversation**. "The situation requires it" is never a valid reason to break a rule — stop and ask instead.
+- The rules in this file are **absolute unless the user explicitly overrides them in the current conversation**. "The situation requires it" is never a valid reason to break a rule -- stop and ask instead.
 - When a command you're about to run would violate a rule (e.g., `--force`, `--force-with-lease`, `--amend`, pushing to main), do not run it. Explain the conflict and let the user decide.
 
 ## Convention Matching
@@ -42,7 +56,7 @@ Before writing any new code or files, read 2-3 existing examples of the same typ
 ## Code Style
 
 - Extract common patterns (DRY). If the same expression appears in multiple branches with one token different, factor out the shared structure.
-- SQL: List columns explicitly — avoid `SELECT *` and `SELECT table.*`. Exception: unwieldy column lists.
+- SQL: List columns explicitly -- avoid `SELECT *` and `SELECT table.*`. Exception: unwieldy column lists.
 
 ## Tool Preferences
 
@@ -63,19 +77,21 @@ Before writing any new code or files, read 2-3 existing examples of the same typ
 ## PR Reviews
 
 - When reviewing PR comments, only look at **unresolved/open** threads by default. Ignore resolved comments unless explicitly asked to review them.
-  - To filter by resolution status, use the GraphQL API: `gh api graphql -f query='{ repository(owner: "...", name: "...") { pullRequest(number: N) { reviewThreads(first: 50) { nodes { isResolved comments(first: 10) { nodes { author { login } body path line } } } } } } }' --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false) | ...'`. The REST endpoint `pulls/{id}/comments` does **not** expose resolution status — never use it for PR reviews.
+  - To filter by resolution status, use the GraphQL API: `gh api graphql -f query='{ repository(owner: "...", name: "...") { pullRequest(number: N) { reviewThreads(first: 50) { nodes { isResolved comments(first: 10) { nodes { author { login } body path line } } } } } } }' --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false) | ...'`. The REST endpoint `pulls/{id}/comments` does **not** expose resolution status -- never use it for PR reviews.
 
 ## Communication
 
 - Search from the repo root, not just the current working directory.
 - Don't echo back the user's request. Just do the work.
-- Don't suggest follow-up actions or ask "would you like me to..." — just finish.
+- Don't suggest follow-up actions or ask "would you like me to..." -- just finish.
 - Never suggest merging PRs. Push commits and let the user handle merging.
+- **Never use em-dashes** (--). Use double hyphens (--) if a dash is needed, or restructure the sentence.
+- Avoid AI-slop rhetorical patterns: "this, not that", "it wasn't just X, it was Y", "not only X but also Y". Write plainly.
 
 ## GitHub Identity
 
 - **NEVER post as the user on GitHub.** This includes PR comments, review comments, review submissions, issue comments, and any other content attributed to the user's identity. These are personal speech. Always present proposed replies in chat and let the user post them.
-- Acceptable actions that don't impersonate: creating PRs (`gh pr create`), updating PR descriptions, and authoring commit messages — these are workflow artifacts, not personal communication.
+- Acceptable actions that don't impersonate: creating PRs (`gh pr create`), updating PR descriptions, and authoring commit messages -- these are workflow artifacts, not personal communication.
 
 ## DevLoop (Local Dev Server Workflow)
 
@@ -83,7 +99,7 @@ For UI, styling, or layout work where visual verification matters. Automated tes
 
 **When to start:**
 1. The human says something like "let's devloop this" or "let's devloop on this", OR
-2. The approved plan includes a DevLoop/verification section with URLs to check — start **automatically** after implementing, don't wait to be asked
+2. The approved plan includes a DevLoop/verification section with URLs to check -- start **automatically** after implementing, don't wait to be asked
 
 **Spin Up:**
 - Check for an existing dev server on the expected port (e.g., `lsof -i :<port> -t`)
