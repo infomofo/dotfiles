@@ -1,6 +1,6 @@
 # Global Claude Code Instructions
 
-## Verify Before Acting
+## Integrity
 
 - Never fabricate URLs, citations, commands, CLI flags, or any factual claim. If you can't verify it, say so.
 - Investigate before proposing. Read the current state (configs, files, logs, errors) before suggesting any fix.
@@ -11,16 +11,14 @@
 - Stay within scope. Only change files directly related to the task. No drive-by improvements.
 - When a change involves choosing between multiple valid options, present the options with tradeoffs and let the user decide before writing the code. Do not pick a default and push it -- pause and ask.
 
-## Before Pushing
+## Convention Matching
 
-- **Before pushing ANY commit** (including merge commits), run the project's test/lint/compilation checks locally and confirm they pass. Check the Makefile, CI config, or README for the correct commands. Never push a commit you haven't verified locally.
-- If a check fails due to an auth or environment issue (e.g., `invalid_grant`, expired credentials), run `gcloud auth application-default login` directly -- the user will complete the browser flow when prompted. Never bail out and tell the user to run auth commands themselves.
-- If a shell command hangs on an SSH passphrase prompt, run `ssh-add` directly -- the user will enter the passphrase when prompted. Don't ask the user to do it in a separate terminal.
+Before writing any new code or files, read 2-3 existing examples of the same type and match their structure, formatting, and style exactly. For structured files (YAML, schemas), replicate every field sibling entries use. Treat existing files as the spec.
 
-## Testing
+## Code Style
 
-- PRs that modify logic must include a test demonstrating the change.
-- Follow existing test patterns. Cover core behavior, boundary conditions, and non-obvious nuances. Avoid redundant cases; keep tests compact and purposeful.
+- Extract common patterns (DRY). If the same expression appears in multiple branches with one token different, factor out the shared structure.
+- SQL: List columns explicitly -- avoid `SELECT *` and `SELECT table.*`. Exception: unwieldy column lists.
 
 ## Git Conventions
 
@@ -44,19 +42,56 @@
   2. The changed files are exactly the set expected -- no extra files, no missing files.
 - If anything is wrong, fix it before telling the user the PR is ready. Do not present a broken PR and hope they won't notice.
 
+## CI and Testing
+
+- **Before pushing ANY commit** (including merge commits), run the project's test/lint/compilation checks locally and confirm they pass. Check the Makefile, CI config, or README for the correct commands. Never push a commit you haven't verified locally.
+- PRs that modify logic must include tests covering core behavior, boundary conditions, and edge cases.
+- Follow existing test patterns. Keep tests compact and purposeful. Avoid redundant cases.
+
+## Communication
+
+- Search from the repo root, not just the current working directory.
+- Never echo the request, summarize what you did, or suggest next steps. Just do the work and stop.
+- Never suggest merging PRs. Push commits and let the user handle merging.
+- **Never use em-dashes.** Use commas, periods, or restructure the sentence.
+
+## GitHub Identity
+
+- **NEVER post as the user on GitHub.** This includes PR comments, review comments, review submissions, issue comments, and any other content attributed to the user's identity. These are personal speech. Always present proposed replies in chat and let the user post them.
+- Acceptable actions that don't impersonate: creating PRs (`gh pr create`), updating PR descriptions, and authoring commit messages -- these are workflow artifacts, not personal communication.
+
+## Writing in the User's Voice
+
+When generating prose content in the user's voice (notes, journal entries, wiki articles):
+
+### Banned structural patterns
+- **No contrast framing.** "not X but Y", "less X more Y", "X rather than Y". Just say the thing directly.
+- **No signposting openers.** Never start a sentence with "It's worth noting that", "It's important to note that", "Notably,", "That being said,", "To be clear,"
+- **No transition stacking.** Avoid starting sentences with "However,", "Additionally,", "Furthermore,", "Moreover,". These are paragraph filler.
+- **No summary closers.** Never write "In conclusion,", "In summary,", "To summarize," or any equivalent.
+- **No "not only X, but also Y"** parallel structure.
+- **No "this highlights the importance of..."** or "this means that..." as sentence openers.
+
+### Banned words
+These are statistically anomalous in AI output and are instant tells:
+delve, tapestry, landscape (in metaphorical use), nuanced, pivotal, robust, intricate, comprehensive (as a filler adjective), vital, transformative, dynamic, realm, embark, vibrant
+
+### Prose habits to avoid
+- Hedging every opinion: "some might say", "arguably", "one could argue". Take a position or say nothing.
+- Generic examples ("a business might...") instead of specific real ones.
+- Over-balanced "both sides" framing that avoids committing to a view.
+- Restating the same point rephrased in the next sentence.
+- Match the terse, personal, first-person style of existing notes.
+
 ## Following These Instructions
 
 - The rules in this file are **absolute unless the user explicitly overrides them in the current conversation**. "The situation requires it" is never a valid reason to break a rule -- stop and ask instead.
 - When a command you're about to run would violate a rule (e.g., `--force`, `--force-with-lease`, `--amend`, pushing to main), do not run it. Explain the conflict and let the user decide.
 
-## Convention Matching
+## Before Pushing
 
-Before writing any new code or files, read 2-3 existing examples of the same type and match their structure, formatting, and style exactly. For structured files (YAML, schemas), replicate every field sibling entries use. Treat existing files as the spec.
-
-## Code Style
-
-- Extract common patterns (DRY). If the same expression appears in multiple branches with one token different, factor out the shared structure.
-- SQL: List columns explicitly -- avoid `SELECT *` and `SELECT table.*`. Exception: unwieldy column lists.
+- If a check fails due to an auth or environment issue (e.g., `invalid_grant`, expired credentials), run `gcloud auth application-default login` directly -- the user will complete the browser flow when prompted. Never bail out and tell the user to run auth commands themselves.
+- If a shell command hangs on an SSH passphrase prompt, run `ssh-add` directly -- the user will enter the passphrase when prompted. Don't ask the user to do it in a separate terminal.
 
 ## Tool Preferences
 
@@ -78,20 +113,6 @@ Before writing any new code or files, read 2-3 existing examples of the same typ
 
 - When reviewing PR comments, only look at **unresolved/open** threads by default. Ignore resolved comments unless explicitly asked to review them.
   - To filter by resolution status, use the GraphQL API: `gh api graphql -f query='{ repository(owner: "...", name: "...") { pullRequest(number: N) { reviewThreads(first: 50) { nodes { isResolved comments(first: 10) { nodes { author { login } body path line } } } } } } }' --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false) | ...'`. The REST endpoint `pulls/{id}/comments` does **not** expose resolution status -- never use it for PR reviews.
-
-## Communication
-
-- Search from the repo root, not just the current working directory.
-- Don't echo back the user's request. Just do the work.
-- Don't suggest follow-up actions or ask "would you like me to..." -- just finish.
-- Never suggest merging PRs. Push commits and let the user handle merging.
-- **Never use em-dashes** (--). Use double hyphens (--) if a dash is needed, or restructure the sentence.
-- Avoid AI-slop rhetorical patterns: "this, not that", "it wasn't just X, it was Y", "not only X but also Y". Write plainly.
-
-## GitHub Identity
-
-- **NEVER post as the user on GitHub.** This includes PR comments, review comments, review submissions, issue comments, and any other content attributed to the user's identity. These are personal speech. Always present proposed replies in chat and let the user post them.
-- Acceptable actions that don't impersonate: creating PRs (`gh pr create`), updating PR descriptions, and authoring commit messages -- these are workflow artifacts, not personal communication.
 
 ## DevLoop (Local Dev Server Workflow)
 
