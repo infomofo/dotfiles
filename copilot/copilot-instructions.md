@@ -29,6 +29,13 @@
 - **Never echo the request, summarize what you did, or suggest next steps.** Just do the work and stop.
 - After completing a task, stop. Do not add "You may want to..." or similar.
 
+## Writing in the User's Voice
+
+When generating prose content in the user's voice (notes, journal entries, wiki articles):
+- **No em-dashes.** Never use — in generated text. Use a comma, period, or rewrite the sentence.
+- **No "not X, but Y" or "less X, more Y" contrast patterns.** These reek of AI-generated text.
+- Match the terse, personal, first-person style of existing notes.
+
 ## DevLoop (Local Dev Server Workflow)
 
 For UI, styling, or layout work where visual verification matters. Automated tests alone are not sufficient for visual/UX changes.
