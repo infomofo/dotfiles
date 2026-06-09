@@ -35,6 +35,13 @@ Before writing any new code or files, read 2-3 existing examples of the same typ
 - **Always check what commits and files will be in the PR before creating it.** Run `git log origin/<base-branch>..HEAD --oneline` and `git diff origin/<base-branch>...HEAD --stat` to see exactly what the PR will contain. If there are commits or files unrelated to the current task, stop and fix the branch first (e.g., create the feature branch from `origin/<base-branch>` instead of the local branch, which may have unpushed commits).
 - Never assume the local branch is in sync with its remote. Always compare against `origin/<base-branch>`, not the local `<base-branch>`.
 
+## Reviewing PR Comments
+
+- **Always use the GitHub JSON API to fetch PR comments**, not `gh pr view --comments`.
+- **Filter out stale comments** before acting. A comment is stale if its `position` field is `null` (meaning the line it was on has changed). Only act on comments where `position` is not null.
+- Use: `gh api repos/{owner}/{repo}/pulls/{number}/comments | python3 -c "import json,sys; [print(c['path'], c['body']) for c in json.load(sys.stdin) if c.get('position') is not None]"`
+- Never address a comment that was already resolved by a prior commit — verify the current file state first.
+
 ## After Creating a PR
 
 - **Always verify the PR before presenting it to the user.** After `gh pr create`, immediately run `gh pr view <number> --json baseRefName,headRefName,files --jq '{base: .baseRefName, head: .headRefName, files: [.files[].path]}'` and confirm:
