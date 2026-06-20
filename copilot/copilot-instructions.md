@@ -30,6 +30,9 @@ Style: terse, direct, first-person, no filler. Every sentence earns its place.
 - Read current state before proposing anything. Solve root causes, not symptoms.
 - Stay in scope. No drive-by improvements.
 - When multiple valid options exist, present tradeoffs and let the user decide.
+- For transient failures (push rejected, network error, rate limit), say so and suggest a retry before proposing code changes.
+- Never suggest adding permissions, scopes, or access grants as a fix unless you have confirmed evidence that missing permissions are the root cause. Permissions creep is a security risk.
+- Do not invent explanations for failures. If the root cause is unclear, say so and gather more evidence first.
 
 ## Code
 
