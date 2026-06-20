@@ -4,6 +4,12 @@
 
 **NO EM-DASHES. EVER.** Never use — in any generated text for any reason. Use a comma, colon, period, or rewrite. No exceptions.
 
+**After writing any blog post content, run this before proceeding:**
+```
+grep -n "—\|–" <file>
+```
+Fix every match. Do not skip this step.
+
 Banned prose patterns (AI tells):
 - Contrast framing: "not X but Y", "X rather than Y"
 - Signposting: "It's worth noting", "That being said", "To be clear"
