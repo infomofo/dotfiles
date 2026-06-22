@@ -93,31 +93,45 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 - Is factually wrong, misreads the diff, or points to a non-existent issue — update instructions to prevent that class of comment from recurring
 - Is too vague to produce an actionable change — update instructions to require specificity
 
-## Fix Code Issues
+## Plan and Present — Wait for Approval
 
-Read the file and surrounding context. Apply the minimum surgical change. Do not make unrelated edits in the same pass. Run whatever lint/test scripts exist in the repo to confirm nothing broke.
+**Before touching any files**, present the full action plan to the user:
 
-## Update Instructions
+```
+## PR Comment Action Plan
 
-Check for `.github/instructions/` in the repo root. Follow the naming conventions already present in the repo:
-- File names: `<topic>.instructions.md` — e.g. `review.instructions.md`, `vue.instructions.md`, `javascript.instructions.md`
-- Frontmatter: `applyTo:` scoped to the relevant file glob — e.g. `"src/**/*.vue"`, `"**/*.js,**/*.mjs"`, `"**"` for repo-wide
-- Scope `applyTo` to match the type of file the comment was about — do not use `"**"` when a narrower glob fits
-- For review-only rules, add `excludeAgent: "cloud-agent"` so they apply to Copilot code review but not the coding agent
-- Add a specific, concrete rule — not vague:
-  - Good: `- Do not comment on import ordering — the project does not enforce a specific order.`
-  - Bad: `- Don't comment on style.`
+**Fix in code:**
+- `src/foo.vue` — [one-line description of what and why]
 
-If no `.github/instructions/` directory exists, create one with a scoped `review.instructions.md`.
+**Update .github/instructions/:**
+- `vue.instructions.md` (applyTo: src/**/*.vue) — add rule: [exact rule text]
 
-## Report, Commit, and Push
+**Human comments requiring your attention:**
+- [verbatim quote, file:line]
+```
 
-Show the user what will be committed:
-- Fixed in code: file path + one-line description per comment
-- Updated instructions: the rule added and what comment it prevents
-- Human comments that need the user's attention: list them verbatim
+Only include sections that have content. Omit any section with nothing to report.
 
-In autopilot mode, proceed directly to commit without waiting. Otherwise wait for the user to confirm.
+Wait for explicit user approval before making any changes. Do not proceed until the user confirms.
+
+## Apply Fixes
+
+Once approved, apply changes in this order:
+
+1. **Code fixes**: read the file and surrounding context, apply the minimum surgical change, do not make unrelated edits.
+2. **Instruction updates**: follow the naming and frontmatter conventions already present in the repo:
+   - File names: `<topic>.instructions.md` — e.g. `review.instructions.md`, `vue.instructions.md`, `javascript.instructions.md`
+   - Frontmatter: `applyTo:` scoped to the relevant file glob — e.g. `"src/**/*.vue"`, `"**/*.js,**/*.mjs"`, `"**"` for repo-wide
+   - Scope `applyTo` to match the type of file the comment was about — do not use `"**"` when a narrower glob fits
+   - For review-only rules, add `excludeAgent: "cloud-agent"` so they apply to Copilot code review but not the coding agent
+   - Rules must be specific and concrete:
+     - Good: `- Do not comment on import ordering — the project does not enforce a specific order.`
+     - Bad: `- Don't comment on style.`
+   - If no `.github/instructions/` directory exists, create one with a scoped `review.instructions.md`.
+
+Run lint and tests to confirm nothing broke.
+
+## Commit and Push
 
 Stage all changed source files and updated/created instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the current branch (the PR branch).
 
