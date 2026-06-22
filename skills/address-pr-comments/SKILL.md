@@ -33,6 +33,7 @@ query {
         nodes {
           id
           isResolved
+          isOutdated
           comments(first: 1) {
             nodes {
               path
@@ -50,7 +51,9 @@ import json, sys
 data = json.load(sys.stdin)
 threads = data['data']['repository']['pullRequest']['reviewThreads']['nodes']
 for t in threads:
-    if t['isResolved']:
+    if t['isResolved'] or t['isOutdated']:
+        continue
+    if not t['comments']['nodes']:
         continue
     c = t['comments']['nodes'][0]
     print(f\"[{c['author']['login']} / {c['author']['__typename']}] {c['path']}:{c.get('line')} thread:{t['id']}\")
