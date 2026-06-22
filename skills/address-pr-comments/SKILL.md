@@ -22,7 +22,7 @@ gh pr view --json number,url
 ```
 If no open PR exists for the current branch, tell the user and stop.
 
-Fetch only **unresolved** threads using GraphQL (this avoids processing already-resolved comments):
+Fetch all review threads (up to 100) using GraphQL, then filter to unresolved ones locally. Note: if a PR has more than 100 threads, threads beyond the first 100 will be silently skipped — this is acceptable for typical PRs.
 
 ```bash
 gh api graphql -f query='
@@ -35,7 +35,6 @@ query {
           isResolved
           comments(first: 1) {
             nodes {
-              databaseId
               path
               line
               body
