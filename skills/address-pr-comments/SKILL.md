@@ -22,15 +22,41 @@ gh pr view --json number,url
 ```
 If no open PR exists for the current branch, tell the user and stop.
 
-Fetch active inline comments (stale comments have `position: null` — ignore them):
+Fetch only **unresolved** threads using GraphQL (this avoids processing already-resolved comments):
+
 ```bash
-gh api repos/{owner}/{repo}/pulls/{number}/comments \
-  | python3 -c "
+gh api graphql -f query='
+query {
+  repository(owner: "{owner}", name: "{repo}") {
+    pullRequest(number: {number}) {
+      reviewThreads(first: 100) {
+        nodes {
+          id
+          isResolved
+          comments(first: 1) {
+            nodes {
+              databaseId
+              path
+              line
+              body
+              author { login __typename }
+            }
+          }
+        }
+      }
+    }
+  }
+}' | python3 -c "
 import json, sys
-comments = json.load(sys.stdin)
-for c in comments:
-    if c.get('position') is not None:
-        print(c['user']['login'], c['user']['type'], c['path'], c.get('line'), c['body'][:200])
+data = json.load(sys.stdin)
+threads = data['data']['repository']['pullRequest']['reviewThreads']['nodes']
+for t in threads:
+    if t['isResolved']:
+        continue
+    c = t['comments']['nodes'][0]
+    print(f\"[{c['author']['login']} / {c['author']['__typename']}] {c['path']}:{c.get('line')} thread:{t['id']}\")
+    print(c['body'][:300])
+    print()
 "
 ```
 
@@ -45,11 +71,11 @@ for r in json.load(sys.stdin):
 "
 ```
 
-## Identify Agent Comments
+## Identify and Triage Comments
 
-A comment is agent-sourced when `user.type == "Bot"` or the username contains `copilot`, `claude`, `github-advanced-security`, or `dependabot`.
+A comment is agent-sourced when `author.__typename == "Bot"` or the login contains `copilot`, `claude`, `github-advanced-security`, or `dependabot`.
 
-Human comments: if they identify a valid issue, fix it. If not, surface them to the user without acting.
+Human comments: fix the issue if it's valid. If not, surface them to the user verbatim without acting.
 
 ## Evaluate Each Comment
 
@@ -77,48 +103,27 @@ Check for `.github/instructions/` in the repo root. Follow the naming convention
 - File names: `<topic>.instructions.md` — e.g. `review.instructions.md`, `vue.instructions.md`, `javascript.instructions.md`
 - Frontmatter: `applyTo:` scoped to the relevant file glob — e.g. `"src/**/*.vue"`, `"**/*.js,**/*.mjs"`, `"**"` for repo-wide
 - Scope `applyTo` to match the type of file the comment was about — do not use `"**"` when a narrower glob fits
-- Add a specific, concrete rule. Not vague:
+- For review-only rules, add `excludeAgent: "cloud-agent"` so they apply to Copilot code review but not the coding agent
+- Add a specific, concrete rule — not vague:
   - Good: `- Do not comment on import ordering — the project does not enforce a specific order.`
   - Bad: `- Don't comment on style.`
 
-If no `.github/instructions/` directory exists, create `review.instructions.md` scoped to the type of file the comment was about, not `"**"` unless the rule genuinely applies to all files. For review-only rules, use `excludeAgent: "cloud-agent"` in the frontmatter so the instructions only apply to Copilot code review, not the coding agent:
+If no `.github/instructions/` directory exists, create one with a scoped `review.instructions.md`.
 
-```markdown
----
-applyTo: "src/**/*.vue"
-excludeAgent: "cloud-agent"
----
-```
+## Report, Commit, and Push
 
-## Report and Wait for Approval
-
-Before committing, show the user:
+Show the user what will be committed:
 - Fixed in code: file path + one-line description per comment
 - Updated instructions: the rule added and what comment it prevents
 - Human comments that need the user's attention: list them verbatim
 
-Wait for the user to confirm the changes look good before proceeding.
+In autopilot mode, proceed directly to commit without waiting. Otherwise wait for the user to confirm.
 
-## Commit and Push
+Stage all changed source files and updated/created instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the current branch (the PR branch).
 
-Once approved, stage all changed source files and updated/created instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the current branch (the PR branch).
+## Resolve Bot Threads
 
-## Resolve Bot Comments
-
-After pushing, resolve each bot-generated comment that was addressed (fixed or handled via instructions). Use the GitHub API — only resolve comments where `user.type == "Bot"`:
-
-```bash
-gh api repos/{owner}/{repo}/pulls/comments/{comment_id}/replies \
-  --method POST \
-  -f body="Resolved"
-
-# Then resolve the thread:
-gh api repos/{owner}/{repo}/pulls/{number}/comments/{comment_id} \
-  --method PATCH \
-  -f position=null
-```
-
-Note: The GitHub REST API does not expose a direct "resolve thread" endpoint for pull request review comments. Use the GraphQL API instead:
+The thread IDs were already fetched above. For each unresolved bot thread that was addressed (fixed in code or handled via instructions), resolve it:
 
 ```bash
 gh api graphql -f query='
@@ -129,24 +134,4 @@ mutation {
 }'
 ```
 
-To get thread IDs, fetch the review threads:
-```bash
-gh api graphql -f query='
-query {
-  repository(owner: "{owner}", name: "{repo}") {
-    pullRequest(number: {number}) {
-      reviewThreads(first: 100) {
-        nodes {
-          id
-          isResolved
-          comments(first: 1) {
-            nodes { databaseId author { login } }
-          }
-        }
-      }
-    }
-  }
-}'
-```
-
-Resolve only threads where the first comment's author is a bot. Never resolve threads started by a human commenter.
+Never resolve threads where the first comment's author is a human.
