@@ -28,7 +28,14 @@ Before writing any new code or files, read 2-3 existing examples of the same typ
 - Only amend commits if explicitly asked. On PR review feedback, push new commits to preserve review history.
 - Branch names: `$USER/<short-description-of-change>`
 - **The user must have a chance to review every change before it reaches origin.** After committing locally, stop and show the diff. Do not run `git push` or `gh pr create` until the user explicitly says to push. Note: requesting a PR (e.g., "open a PR", "let's PR this") counts as explicit approval to push -- do not ask again.
+- **Never run `git rebase` to update a PR branch unless the user explicitly asks for it.** When upstream changes cause conflicts or CI failures, edit the affected files directly and commit on top. Rebase rewrites history and requires a force push, destroying review context. "CI is failing" or "upstream changed" is never a reason to rebase.
 - **After resolving merge conflicts**, verify the resolved files are correct and run checks before committing. Don't blindly accept `--theirs` or `--ours`.
+
+## Respecting Other Developers' Branches and PRs
+
+- **Ask before committing to another developer's branch.** If the user says "check out branch X" or "base off of X", confirm whether to commit directly to X or create a new branch from it. Branch prefixes like `username/` are a strong signal of someone else's ownership.
+- **Ask before modifying another developer's PR metadata** (title, description). Another developer's PR is their work product. Overwriting it without permission damages trust with teammates.
+- When the user says "make a PR off of [branch]" or "base off of [branch]", the default assumption should be: (1) create a new branch from that branch, (2) commit to the new branch, (3) open a PR targeting the original branch as the base. Confirm if unsure.
 
 ## Before Creating a PR
 
