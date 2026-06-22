@@ -49,7 +49,12 @@ query {
 }' | python3 -c "
 import json, sys
 data = json.load(sys.stdin)
-threads = data['data']['repository']['pullRequest']['reviewThreads']['nodes']
+if 'errors' in data:
+    sys.exit('GraphQL errors: ' + json.dumps(data['errors']))
+pr = data.get('data', {}).get('repository', {}).get('pullRequest')
+if not pr:
+    sys.exit('PR not found or insufficient permissions')
+threads = pr['reviewThreads']['nodes']
 for t in threads:
     if t['isResolved'] or t['isOutdated']:
         continue
