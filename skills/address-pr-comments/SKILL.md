@@ -80,7 +80,7 @@ for r in json.load(sys.stdin):
 
 ## Identify and Triage Comments
 
-A comment is agent-sourced when `author.__typename == "Bot"` or the login contains `copilot`, `claude`, `github-advanced-security`, or `dependabot`.
+A comment is agent-sourced when `author.__typename == "Bot"`.
 
 Human comments: fix the issue if it's valid. If not, surface them to the user verbatim without acting.
 
