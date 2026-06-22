@@ -18,6 +18,7 @@ Personal dotfiles for vim, tmux, and SSH configuration. Symlinked into `~` for u
 claude/settings.json      - Claude Code global settings (hooks for tmux integration)
 claude/CLAUDE.md          - Claude Code global instructions (behavior preferences)
 .claude/settings.local.json - Claude Code project-level permissions (this repo only)
+skills/                   - Shared agent skills (symlinked from ~/.copilot/skills and ~/.claude/skills)
 setup.sh                  - Symlinks dotfiles into $HOME and hydrates ~/.secrets from Keychain
 ```
 
@@ -25,7 +26,13 @@ setup.sh                  - Symlinks dotfiles into $HOME and hydrates ~/.secrets
 
 Files in `claude/` (no dot) are **global** config — symlinked into `~/.claude/` on each machine. Files in `.claude/` (with dot) are **project-level** settings scoped to this repo.
 
-Only `settings.json` and `CLAUDE.md` are shared. Machine-local files like `settings.local.json`, `history.jsonl`, caches, and session state stay in `~/.claude/` untracked.
+`settings.json`, `CLAUDE.md`, and `skills/` are shared. Machine-local files like `settings.local.json`, `history.jsonl`, caches, and session state stay in `~/.claude/` untracked.
+
+### Skills
+
+Shared agent skills live in `skills/`. Each skill is a subdirectory with a `SKILL.md` file containing YAML frontmatter and instructions. `setup.sh` symlinks `skills/` into both `~/.copilot/skills` and `~/.claude/skills` so they are available to both GitHub Copilot CLI and Claude Code on every machine.
+
+To add a skill: create `skills/<name>/SKILL.md` and commit it.
 
 ## Vim Plugin Management
 

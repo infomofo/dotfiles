@@ -48,10 +48,12 @@ link_file "$DOTFILES_DIR/.ssh/config" "$HOME/.ssh/config"
 mkdir -p "$HOME/.claude"
 link_file "$DOTFILES_DIR/claude/settings.json" "$HOME/.claude/settings.json"
 link_file "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+link_file "$DOTFILES_DIR/skills" "$HOME/.claude/skills"
 
 # GitHub Copilot CLI
 mkdir -p "$HOME/.copilot"
 link_file "$DOTFILES_DIR/copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
+link_file "$DOTFILES_DIR/skills" "$HOME/.copilot/skills"
 
 # Optional: IntelliJ IdeaVim
 # link_file "$HOME/.vim/vimrc" "$HOME/.ideavimrc"

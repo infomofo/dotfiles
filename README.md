@@ -51,6 +51,8 @@ This symlinks all dotfiles into `$HOME` (backing up any existing files) and hydr
 > **Note:** Only specific Claude Code and Copilot CLI files are symlinked — not the whole
 > `~/.claude/` or `~/.copilot/` directories. Both tools store machine-local runtime data
 > (history, caches, session state, auth tokens) that should not be shared.
+> `~/.copilot/skills` and `~/.claude/skills` are the exception: both are symlinked to
+> `skills/` in this repo so shared skills are available on every machine.
 
 ### 5. Install prerequisites
 
@@ -64,6 +66,27 @@ vimwiki is configured to use an Obsidian vault at `~/Library/Mobile Documents/iC
 
 - **tmux** (copy-paste works natively on modern macOS, no extra tools needed)
 - **Claude Code** (optional — `settings.json` hooks integrate with tmux for window naming)
+
+## Copilot CLI / Claude Code Skills
+
+Shared skills live in `skills/`. Each skill is a directory containing a `SKILL.md` with YAML frontmatter (`name`, `description`) and instructions for the agent.
+
+`~/.copilot/skills` and `~/.claude/skills` are both symlinked to `skills/` by `setup.sh`, so all skills are available in every project automatically for both tools.
+
+### To add a new skill
+
+```sh
+mkdir skills/<skill-name>
+# create skills/<skill-name>/SKILL.md with frontmatter and instructions
+git add skills/<skill-name>
+```
+
+### Current skills
+
+| Skill | Description |
+|-------|-------------|
+| `devloop` | Web dev server workflow for visual/UI verification |
+| `address-pr-comments` | Reviews and acts on automated PR review comments |
 
 ## To add new vim plugins
 
