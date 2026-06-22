@@ -90,12 +90,63 @@ excludeAgent: "cloud-agent"
 ---
 ```
 
-## Commit and Push
+## Report and Wait for Approval
 
-Stage all changed source files and updated/created instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the current branch (the PR branch).
-
-## Report to User
-
+Before committing, show the user:
 - Fixed in code: file path + one-line description per comment
 - Updated instructions: the rule added and what comment it prevents
 - Human comments that need the user's attention: list them verbatim
+
+Wait for the user to confirm the changes look good before proceeding.
+
+## Commit and Push
+
+Once approved, stage all changed source files and updated/created instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the current branch (the PR branch).
+
+## Resolve Bot Comments
+
+After pushing, resolve each bot-generated comment that was addressed (fixed or handled via instructions). Use the GitHub API — only resolve comments where `user.type == "Bot"`:
+
+```bash
+gh api repos/{owner}/{repo}/pulls/comments/{comment_id}/replies \
+  --method POST \
+  -f body="Resolved"
+
+# Then resolve the thread:
+gh api repos/{owner}/{repo}/pulls/{number}/comments/{comment_id} \
+  --method PATCH \
+  -f position=null
+```
+
+Note: The GitHub REST API does not expose a direct "resolve thread" endpoint for pull request review comments. Use the GraphQL API instead:
+
+```bash
+gh api graphql -f query='
+mutation {
+  resolveReviewThread(input: { threadId: "{thread_id}" }) {
+    thread { isResolved }
+  }
+}'
+```
+
+To get thread IDs, fetch the review threads:
+```bash
+gh api graphql -f query='
+query {
+  repository(owner: "{owner}", name: "{repo}") {
+    pullRequest(number: {number}) {
+      reviewThreads(first: 100) {
+        nodes {
+          id
+          isResolved
+          comments(first: 1) {
+            nodes { databaseId author { login } }
+          }
+        }
+      }
+    }
+  }
+}'
+```
+
+Resolve only threads where the first comment's author is a bot. Never resolve threads started by a human commenter.
