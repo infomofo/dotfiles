@@ -106,6 +106,8 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 - Is factually wrong, misreads the diff, or points to a non-existent issue — update instructions to prevent that class of comment from recurring
 - Is too vague to produce an actionable change — update instructions to require specificity
 
+**A comment can require both a code fix and an instructions update.** For example, a comment may correctly identify one real issue while also making a factually wrong claim (e.g. flagging valid syntax as an error). In that case: fix the real issue in code AND add an instructions rule to suppress the wrong claim in future reviews.
+
 ## Plan and Present — Wait for Approval
 
 **Before touching any files**, present the full action plan to the user:
@@ -153,9 +155,11 @@ Once approved, apply changes in this order:
 
 Run lint and tests to confirm nothing broke.
 
-## Commit and Push
+## Present Changes and Wait for Approval to Commit
 
-Stage all changed source files and updated/created instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the current branch (the PR branch).
+After applying all fixes, summarize what was changed (files edited, rules added) and stop. Do not commit or push. Wait for the user to explicitly approve (e.g. "commit it", "looks good", "ship it") before staging and pushing.
+
+Once the user approves, stage all changed source files and updated/created instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the current branch (the PR branch).
 
 ## Resolve Bot Threads
 
