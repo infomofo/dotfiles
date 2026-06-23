@@ -54,14 +54,15 @@ if 'errors' in data:
 pr = data.get('data', {}).get('repository', {}).get('pullRequest')
 if not pr:
     sys.exit('PR not found or insufficient permissions')
-threads = pr['reviewThreads']['nodes']
+threads = pr.get('reviewThreads', {}).get('nodes', [])
 for t in threads:
     if t['isResolved'] or t['isOutdated']:
         continue
     if not t['comments']['nodes']:
         continue
     c = t['comments']['nodes'][0]
-    print(f\"[{c['author']['login']} / {c['author']['__typename']}] {c['path']}:{c.get('line')} thread:{t['id']}\")
+    author = c.get('author') or {}
+    print(f\"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {c['path']}:{c.get('line')} thread:{t['id']}\")
     print(c['body'][:300])
     print()
 "
@@ -125,7 +126,13 @@ Wait for explicit user approval before making any changes. Do not proceed until 
 
 Once approved, apply changes in this order:
 
-1. **Code fixes**: read the file and surrounding context, apply the minimum surgical change, do not make unrelated edits.
+1. **Code fixes**: read the file and ~20 lines of surrounding context. Apply the minimum surgical change. After applying each fix, scan that same context for obvious follow-on issues — missing guards, unhandled edge cases, or related bugs in the same function — and include them in the same pass rather than leaving them for the next review cycle.
+
+   When editing the embedded Python snippets in this file, always apply all of these defensive patterns in a single pass:
+   - Use `.get()` for all nested dict access that could be absent (e.g., `pr.get('reviewThreads', {}).get('nodes', [])`)
+   - Guard against null `author`: `author = c.get('author') or {}`
+   - Guard against empty `nodes` lists before indexing
+   - Check for a top-level `errors` key in GraphQL responses before traversing `data`
 2. **Instruction updates**: follow the naming and frontmatter conventions already present in the repo:
    - File names: `<topic>.instructions.md` — e.g. `review.instructions.md`, `vue.instructions.md`, `javascript.instructions.md`
    - Frontmatter: `applyTo:` scoped to the relevant file glob — e.g. `"src/**/*.vue"`, `"**/*.js,**/*.mjs"`, `"**"` for repo-wide
