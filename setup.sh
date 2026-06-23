@@ -55,6 +55,10 @@ mkdir -p "$HOME/.copilot"
 link_file "$DOTFILES_DIR/copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
 link_file "$DOTFILES_DIR/skills" "$HOME/.copilot/skills"
 
+# tuicr
+mkdir -p "$HOME/.config/tuicr"
+link_file "$DOTFILES_DIR/tuicr.config.toml" "$HOME/.config/tuicr/config.toml"
+
 # Optional: IntelliJ IdeaVim
 # link_file "$HOME/.vim/vimrc" "$HOME/.ideavimrc"
 

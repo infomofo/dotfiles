@@ -54,6 +54,8 @@ This symlinks all dotfiles into `$HOME` (backing up any existing files) and hydr
 > `~/.copilot/skills` and `~/.claude/skills` are the exception: both are symlinked to
 > `skills/` in this repo so shared skills are available on every machine.
 
+The setup script also symlinks `tuicr.config.toml` to `~/.config/tuicr/config.toml`.
+
 ### 5. Install prerequisites
 
 - **Node.js 22+** (required by GitHub Copilot)
