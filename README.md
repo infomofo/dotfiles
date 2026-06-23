@@ -17,14 +17,14 @@ git submodule update --init --recursive
 ### 2. Seed Keychain secrets
 
 The shell config sources `~/.secrets`, which is generated from macOS Keychain during setup.
-Seed each secret before running the setup script:
+Seed each secret before running the setup script. The secret names are
+defined in the `secrets` array in `setup.sh`.
 
 ```sh
-security add-generic-password -s "FOODIMADE_CF_API_TOKEN" -a "$USER" -w "your-token" -U
-security add-generic-password -s "OPENAI_API_KEY" -a "$USER" -w "your-key" -U
+security add-generic-password -s "<SECRET_NAME>" -a "$USER" -w "<value>" -U
 ```
 
-The login keychain does not sync via iCloud — secrets must be added per machine.
+The login keychain does not sync via iCloud, so secrets must be added per machine.
 
 ### 3. Set up Google service account key
 
@@ -53,6 +53,8 @@ This symlinks all dotfiles into `$HOME` (backing up any existing files) and hydr
 > (history, caches, session state, auth tokens) that should not be shared.
 > `~/.copilot/skills` and `~/.claude/skills` are the exception: both are symlinked to
 > `skills/` in this repo so shared skills are available on every machine.
+
+The setup script also symlinks `tuicr.config.toml` to `~/.config/tuicr/config.toml`.
 
 ### 5. Install prerequisites
 
