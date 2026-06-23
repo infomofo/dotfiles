@@ -44,6 +44,9 @@ the conflict and let the user decide.
   and commit on top instead.
 - Only amend if explicitly asked. PR feedback: push new commits.
 - Branch names: `$USER/<short-description>`
+- Trust the environment context: do not run `git checkout` or switch
+  branches before starting work unless the task explicitly requires a
+  different branch. The session shows the current branch and directory.
 - After editing files, stop for review. Do not commit or push until the
   user explicitly says to. ("open a PR" = approval to push.)
 - After resolving merge conflicts, verify files and run checks before

@@ -1,4 +1,4 @@
-# Global GitHub Copilot Instructions
+# Global GitHub Copilot CLI Instructions
 
 These rules are absolute unless you explicitly override them in the current
 conversation. When a command would violate a rule, do not run it. Explain
@@ -10,7 +10,8 @@ the conflict and let the user decide.
   can't verify it, say so.
 - Investigate the problem before proposing a fix. Read configs, files,
   logs, and errors before suggesting changes.
-- Verify commands and configs before suggesting them.
+- Verify commands and configs before suggesting them (read the config, run
+  help, check docs).
 - When uncertain, say "I don't know" and investigate.
 - When ambiguous, ask for clarification before acting.
 - Multiple valid options: present tradeoffs, let the user decide.
@@ -42,6 +43,9 @@ the conflict and let the user decide.
 - Never delete remote branches or close PRs without explicit approval.
 - Only amend if explicitly asked. PR feedback: push new commits.
 - Branch names: `$USER/<short-description>`
+- Trust the environment context: do not run `git checkout` or switch
+  branches before starting work unless the task explicitly requires a
+  different branch. The session shows the current branch and directory.
 - After editing files, stop for review. Do not commit or push until the
   user explicitly says to. ("open a PR" = approval to push.)
 
@@ -57,7 +61,8 @@ the conflict and let the user decide.
 ## CI
 
 - Run test/lint/build locally before pushing any commit.
-- PRs modifying logic must include tests. Follow existing test patterns.
+- PRs modifying logic must include tests covering core behavior, boundary
+  conditions, and edge cases. Follow existing test patterns.
 
 ## Communication
 
