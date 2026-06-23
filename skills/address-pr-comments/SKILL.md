@@ -24,6 +24,8 @@ If no open PR exists for the current branch, tell the user and stop.
 
 Fetch all review threads (up to 100) using GraphQL, retrieving only the first comment of each thread (sufficient for triage). Filter locally to those that are unresolved and not outdated. Note: if a PR has more than 100 threads, threads beyond the first 100 will be silently skipped — this is acceptable for typical PRs.
 
+Substitute `{owner}` and `{repo}` from the current repository (e.g., via `gh repo view --json owner,name`) and `{number}` from the PR number fetched above.
+
 ```bash
 gh api graphql -f query='
 query {
@@ -84,7 +86,7 @@ for r in json.load(sys.stdin):
 
 ## Identify and Triage Comments
 
-A comment is agent-sourced when `author.__typename == "Bot"`.
+A comment is agent-sourced when `author.__typename == "Bot"` (GraphQL) or `user.type == "Bot"` (REST). These are different fields in different API responses — apply the correct check for each source.
 
 Human comments: fix the issue if it's valid. If not, surface them to the user verbatim without acting.
 
