@@ -56,14 +56,17 @@ if not pr:
     sys.exit('PR not found or insufficient permissions')
 threads = pr.get('reviewThreads', {}).get('nodes', [])
 for t in threads:
-    if t['isResolved'] or t['isOutdated']:
+    if not t:
         continue
-    if not t['comments']['nodes']:
+    if t.get('isResolved') or t.get('isOutdated'):
         continue
-    c = t['comments']['nodes'][0]
+    comments = t.get('comments', {}).get('nodes') or []
+    if not comments:
+        continue
+    c = comments[0]
     author = c.get('author') or {}
-    print(f\"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {c['path']}:{c.get('line')} thread:{t['id']}\")
-    print(c['body'][:300])
+    print(f\"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {c.get('path')}:{c.get('line')} thread:{t.get('id')}\")
+    print(c.get('body', '')[:300])
     print()
 "
 ```
@@ -131,8 +134,11 @@ Once approved, apply changes in this order:
    When editing the embedded Python snippets in this file, verify all of these defensive patterns are present before committing:
    - `errors` key checked in GraphQL response before traversing `data`
    - All nested dict access uses `.get()` (e.g., `pr.get('reviewThreads', {}).get('nodes', [])`)
+   - Null thread nodes guarded: `if not t: continue`
+   - `isResolved`/`isOutdated` accessed via `.get()`
    - Null `author` guarded: `author = c.get('author') or {}`
    - Empty `nodes` list guarded before indexing
+   - `body`/`path`/`line` accessed via `.get()` with safe defaults
 2. **Instruction updates**: follow the naming and frontmatter conventions already present in the repo:
    - File names: `<topic>.instructions.md` — e.g. `review.instructions.md`, `vue.instructions.md`, `javascript.instructions.md`
    - Frontmatter: `applyTo:` scoped to the relevant file glob — e.g. `"src/**/*.vue"`, `"**/*.js,**/*.mjs"`, `"**"` for repo-wide
