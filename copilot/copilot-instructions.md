@@ -39,6 +39,10 @@ Style: terse, direct, first-person, no filler. Every sentence earns its place.
 - Match existing conventions. Read 2-3 examples before writing anything new.
 - DRY. No `SELECT *`.
 
+## Design Decisions
+
+When investigations surface data inconsistencies or broken references, report the findings. Do not invent the fix — if resolving the issue requires choosing a value, name, or mapping that isn't explicitly stated elsewhere in the codebase, ask before making that change.
+
 ## Git
 
 - Never force push, never push to main, never delete remote branches or close PRs without explicit approval.
