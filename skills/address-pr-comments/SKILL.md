@@ -126,7 +126,7 @@ Wait for explicit user approval before making any changes. Do not proceed until 
 
 Once approved, apply changes in this order:
 
-1. **Code fixes**: read the file and ~20 lines of surrounding context. Apply the minimum surgical change. After applying each fix, scan the entire surrounding function or snippet for the same class of issue — missing guards, unhandled edge cases, related bugs — and fix them all in the same pass. Do not patch only the reported line and leave adjacent gaps for the next review cycle.
+1. **Code fixes**: read the file and surrounding context. Apply the minimum surgical change. When addressing a valid comment, consider why it slipped through — then generalize: scan all code being introduced in this PR for the same class of issue and fix every instance in the same pass. Do not patch only the reported line.
 
    When editing the embedded Python snippets in this file, verify all of these defensive patterns are present before committing:
    - `errors` key checked in GraphQL response before traversing `data`
