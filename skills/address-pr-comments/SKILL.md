@@ -22,7 +22,7 @@ gh pr view --json number,url
 ```
 If no open PR exists for the current branch, tell the user and stop.
 
-Fetch all review threads (up to 100) using GraphQL, then filter locally to those that are unresolved and not outdated. Note: if a PR has more than 100 threads, threads beyond the first 100 will be silently skipped — this is acceptable for typical PRs.
+Fetch all review threads (up to 100) using GraphQL, retrieving only the first comment of each thread (sufficient for triage). Filter locally to those that are unresolved and not outdated. Note: if a PR has more than 100 threads, threads beyond the first 100 will be silently skipped — this is acceptable for typical PRs.
 
 ```bash
 gh api graphql -f query='
