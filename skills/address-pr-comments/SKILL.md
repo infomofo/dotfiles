@@ -126,13 +126,13 @@ Wait for explicit user approval before making any changes. Do not proceed until 
 
 Once approved, apply changes in this order:
 
-1. **Code fixes**: read the file and ~20 lines of surrounding context. Apply the minimum surgical change. After applying each fix, scan that same context for obvious follow-on issues — missing guards, unhandled edge cases, or related bugs in the same function — and include them in the same pass rather than leaving them for the next review cycle.
+1. **Code fixes**: read the file and ~20 lines of surrounding context. Apply the minimum surgical change. After applying each fix, scan the entire surrounding function or snippet for the same class of issue — missing guards, unhandled edge cases, related bugs — and fix them all in the same pass. Do not patch only the reported line and leave adjacent gaps for the next review cycle.
 
-   When editing the embedded Python snippets in this file, always apply all of these defensive patterns in a single pass:
-   - Use `.get()` for all nested dict access that could be absent (e.g., `pr.get('reviewThreads', {}).get('nodes', [])`)
-   - Guard against null `author`: `author = c.get('author') or {}`
-   - Guard against empty `nodes` lists before indexing
-   - Check for a top-level `errors` key in GraphQL responses before traversing `data`
+   When editing the embedded Python snippets in this file, verify all of these defensive patterns are present before committing:
+   - `errors` key checked in GraphQL response before traversing `data`
+   - All nested dict access uses `.get()` (e.g., `pr.get('reviewThreads', {}).get('nodes', [])`)
+   - Null `author` guarded: `author = c.get('author') or {}`
+   - Empty `nodes` list guarded before indexing
 2. **Instruction updates**: follow the naming and frontmatter conventions already present in the repo:
    - File names: `<topic>.instructions.md` — e.g. `review.instructions.md`, `vue.instructions.md`, `javascript.instructions.md`
    - Frontmatter: `applyTo:` scoped to the relevant file glob — e.g. `"src/**/*.vue"`, `"**/*.js,**/*.mjs"`, `"**"` for repo-wide
