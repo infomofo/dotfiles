@@ -135,6 +135,8 @@ Once approved, apply changes in this order:
 
 1. **Code fixes**: read the file and surrounding context. Apply the minimum surgical change. When addressing a valid comment, consider why it slipped through — then generalize: scan all code being introduced in this PR for the same class of issue and fix every instance in the same pass. Do not patch only the reported line.
 
+   After applying each fix, check for side effects: identify all callers and consumers of the changed code and verify they still behave correctly with the new output. A fix that changes the shape or size of a data structure (e.g., adding entries to an exported array) must be followed by a scan of every place that structure is consumed in the PR diff. This is the most common source of second review cycles — the fix is correct in isolation but breaks a consumer.
+
    When editing the embedded Python snippets in this file, verify all of these defensive patterns are present before committing:
    - `errors` key checked in GraphQL response before traversing `data`
    - All nested dict access uses `.get()` (e.g., `pr.get('reviewThreads', {}).get('nodes', [])`)
