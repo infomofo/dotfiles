@@ -115,7 +115,7 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 
 **A comment can require both a code fix and an instructions update.** For example, a comment may correctly identify one real issue while also making a factually wrong claim (e.g. flagging valid syntax as an error). In that case: fix the real issue in code AND add an instructions rule to suppress the wrong claim in future reviews.
 
-## Plan and Present — Wait for Approval
+## Plan and Present — Wait for Approval to Apply
 
 **Before touching any files**, present the full action plan to the user:
 
@@ -134,7 +134,7 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 
 Only include sections that have content. Omit any section with nothing to report.
 
-Wait for explicit user approval before making any changes. Do not proceed until the user confirms.
+**Wait for explicit user approval before making any changes.** This approval only covers applying the fixes — it does not cover committing or pushing. Do not proceed until the user confirms.
 
 ## Apply Fixes
 
