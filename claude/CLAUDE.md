@@ -64,6 +64,10 @@ the conflict and let the user decide.
 ## CI
 
 - Run the project's test/lint/build locally before pushing any commit.
+- Always run linters and test runners through the repo's virtual
+  environment — never system-installed binaries. Use `poetry run ruff`,
+  `poetry run pytest`, etc. System binaries may be different versions and
+  will produce different results than CI.
 - PRs modifying logic must include tests covering core behavior, boundary
   conditions, and edge cases. Follow existing test patterns.
 
