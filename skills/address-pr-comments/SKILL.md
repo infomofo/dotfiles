@@ -98,6 +98,11 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 - Dead code — unused, unreachable, or unwired methods/variables
 - A correctness issue with the language/framework (wrong key type, invalid nesting, broken API usage)
 
+**When a comment claims code is broken or has a bug:**
+1. Check whether an existing test already asserts on the claimed behavior. If one does, the comment is dismissed as incorrect — update `.github/instructions/` to tell the reviewer to check for existing tests before claiming breakage.
+2. If no test covers it and the bug is real, fix the code AND add a test that would have caught it.
+3. If no test covers it but the bug claim is wrong, add a test that demonstrates the code works correctly, then dismiss via instructions update.
+
 **Update `.github/instructions/` if the comment:**
 - Is a style preference with no correctness impact
 - Recommends patterns inconsistent with how the codebase is already written
