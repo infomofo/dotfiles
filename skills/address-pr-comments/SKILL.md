@@ -60,8 +60,10 @@ threads = pr.get('reviewThreads', {}).get('nodes', [])
 for t in threads:
     if not t:
         continue
-    if t.get('isResolved') or t.get('isOutdated'):
+    if t.get('isResolved'):
         continue
+    # isOutdated means the line shifted after a new commit, not that the issue is gone.
+    # Still triage these — the code may still have the problem.
     comments = t.get('comments', {}).get('nodes') or []
     if not comments:
         continue
