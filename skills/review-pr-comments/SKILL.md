@@ -144,6 +144,8 @@ Once approved, apply changes in this order:
 
 1. **Code fixes**: read the file and surrounding context. Apply the minimum surgical change. When addressing a valid comment, consider why it slipped through — then generalize: scan all code being introduced in this PR for the same class of issue and fix every instance in the same pass. Do not patch only the reported line.
 
+   **Every code fix must be accompanied by a test, or an explicit written justification for why a test is not needed.** Acceptable reasons to skip a test: the behavior is untestable in jsdom (e.g. browser lifecycle hooks with no observable side effect), or an existing test already covers the corrected behavior. If you skip a test, state the reason in the action plan and in the commit message. Do not silently omit tests.
+
    After applying each fix, check for side effects: identify all callers and consumers of the changed code and verify they still behave correctly with the new output. A fix that changes the shape or size of a data structure (e.g., adding entries to an exported array) must be followed by a scan of every place that structure is consumed in the PR diff. This is the most common source of second review cycles — the fix is correct in isolation but breaks a consumer.
 
    When editing the embedded Python snippets in this file, verify all of these defensive patterns are present before committing:
