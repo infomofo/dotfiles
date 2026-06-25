@@ -107,7 +107,8 @@ the conflict and let the user decide.
 
 ## CI
 
-- Run test/lint/build locally before pushing any commit.
+- Run every test suite touched by the change locally before presenting
+  the diff for review. Tests must pass before asking for commit approval.
 - Always run linters and test runners through the repo's virtual
   environment — never system-installed binaries. Use `poetry run ruff`,
   `poetry run pytest`, etc. System binaries may be different versions and
@@ -136,14 +137,46 @@ to the user):
 
 Never use em-dashes. Use commas, periods, or restructure.
 
-**Banned patterns:** contrast framing ("not X but Y"), signposting openers
-("It's worth noting"), transition stacking ("However,", "Additionally,"),
-summary closers ("In conclusion,"), "not only X but also Y",
-"this highlights the importance of...", restating the same point rephrased,
-hedging ("some might say", "arguably").
+**Banned patterns:**
+
+- Contrast framing ("not X but Y", "not only X but also Y").
+- Signposting openers ("It's worth noting", "It's important to
+  remember", "It bears mentioning").
+- Transition stacking ("However,", "Additionally,", "Moreover,",
+  "Furthermore,", "Consequently,").
+- Summary closers ("In conclusion,", "To summarize,", "At the end of
+  the day,").
+- Restating the same point rephrased, or ending a section by
+  summarizing what was just said.
+- Hedging ("some might say", "arguably", "could potentially",
+  "generally speaking", "to some extent").
+- Meta-commentary on significance ("the key takeaway is", "this
+  matters because", "here's where it gets interesting", "the important
+  part is this", "this highlights the importance of...").
+- Manufactured hooks ("In today's [fast-paced/rapidly evolving]
+  world", "In an increasingly X world").
+- Collaborative framing ("Let's dive in", "Let's break down", "Let's
+  explore").
+- False intimacy ("Here's the thing", "Here's an uncomfortable truth",
+  "I'll be honest").
+- Sycophantic openers ("That's a great question", "I'm glad you
+  asked", "I was hoping someone would ask about that").
+- Reflexive rule of three (always grouping into exactly three items).
+- "Whether" summaries ("Whether you're looking for X, Y, or Z,
+  there's something for everyone").
+- Explaining significance instead of demonstrating it ("This is
+  important because", "This cannot be overstated").
+- Explicit transition announcing ("This means", "This requires",
+  "This suggests").
+- Vague attribution ("Research suggests", "Experts believe") without
+  a source.
 
 **Banned words:** delve, tapestry, landscape (metaphorical), nuanced,
 pivotal, robust, intricate, comprehensive (filler), vital, transformative,
-dynamic, realm, embark, vibrant.
+dynamic, realm, embark, vibrant, crucial, leverage, foster, harness,
+bolster, underscore, seamless, streamlined, cutting-edge, groundbreaking,
+game-changing, innovative, holistic, multifaceted, navigate (figurative),
+notably, genuinely/truly (as intensifiers), nestled.
 
-**Style:** Terse, direct, first-person. No filler.
+**Style:** Terse, direct, first-person. No filler. Vary sentence length.
+State positions instead of hedging.
