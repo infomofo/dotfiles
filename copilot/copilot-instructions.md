@@ -38,16 +38,53 @@ the conflict and let the user decide.
 
 ## Git
 
+### Hard stops
+
+- **NEVER run `git push` targeting main or master.** No exceptions. No
+  hotfixes. No "it's urgent." If the current branch is main/master,
+  STOP and create a feature branch first.
+- **NEVER chain `git commit` and `git push` in a single command.** They
+  must be separate invocations so the commit output can be inspected
+  before pushing.
+- **NEVER commit without explicit approval.** After editing files, show
+  the diff and stop. Wait for an explicit "commit", "push", "open a PR",
+  or equivalent instruction. Silence is not approval. "Let's fix this"
+  is not approval. "Let's make these changes" is not approval. Previous
+  approval is not approval. Only an explicit instruction in the current
+  context to commit/push/PR is approval.
+
+### Pre-commit checklist (run every time, no exceptions)
+
+1. `git branch --show-current` — verify on a PR branch, not a protected
+   branch (main, master, etc.). If not on a PR branch, STOP and create
+   one.
+2. `git status` — check for untracked files that should not be staged.
+3. `git diff --stat` — show what will be committed. Wait for approval
+   before proceeding.
+
+### Pre-push checklist (run every time, no exceptions)
+
+1. Read the commit output from step above. Verify the branch name in
+   `[branch hash]` is NOT main/master. If it says `[main ...]` or
+   `[master ...]`, do NOT push. Alert the user immediately.
+2. `git log --oneline -1` — confirm the commit message and branch.
+3. Only then run `git push`.
+
+### Branch awareness
+
+- The branch shown at session start may change mid-session (e.g. after
+  a PR merge). NEVER assume you are still on the same branch. Always
+  verify with `git branch --show-current` before any git write
+  operation (commit, push, rebase, merge, checkout).
+### Other git rules
+
 - Never force push. If a branch has diverged, stop and ask.
-- Never push to main/master. Always use a feature branch and PR.
 - Never delete remote branches or close PRs without explicit approval.
+- Never rebase to update a PR branch unless explicitly asked. Edit files
+  and commit on top instead.
 - Only amend if explicitly asked. PR feedback: push new commits.
-- Branch names: `$USER/<short-description>`
-- Trust the environment context: do not run `git checkout` or switch
-  branches before starting work unless the task explicitly requires a
-  different branch. The session shows the current branch and directory.
-- After editing files, stop for review. Do not commit or push until the
-  user explicitly says to. ("open a PR" = approval to push.)
+- After resolving merge conflicts, verify files and run checks before
+  committing.
 
 ## PRs
 
