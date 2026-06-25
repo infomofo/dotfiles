@@ -22,11 +22,11 @@ lsof -i :<port> -t
 If running, reuse it. Otherwise, **always start with `detach: true`** so the server survives across tool calls, test runs, and session activity:
 
 ```bash
-# Start detached, log to a temp file for debugging
-<dev-command> > /tmp/dev-server.log 2>&1
+# Command to pass to the bash tool with mode: "async", detach: true
+<dev-command> > /tmp/<project>-dev.log 2>&1
 ```
 
-Use `mode: "async"` with `detach: true`. Log output to `/tmp/<project>-dev.log` so you can inspect it later.
+Use `mode: "async"` with `detach: true` in the tool invocation (not in the bash command itself). Log output to `/tmp/<project>-dev.log` so you can inspect it later.
 
 Find the right command and port from `package.json`, `README`, or `AGENTS.md` — common examples:
 - `npm run dev` / `yarn dev` (port 3000, 5173, etc.)
@@ -54,7 +54,7 @@ lsof -i :<port> -t && echo "running" || echo "dead"
 
 **If the server died**, check the log before restarting:
 ```bash
-cat /tmp/<project>-dev.log | tail -30
+tail -30 /tmp/<project>-dev.log
 ```
 Then restart with `detach: true` again.
 
