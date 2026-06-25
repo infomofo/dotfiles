@@ -94,6 +94,11 @@ the conflict and let the user decide.
 - After creating: run `gh pr view <n> --json baseRefName,headRefName,files`
   to verify base branch and changed files. Fix before presenting.
 - Always pass `--base` explicitly to `gh pr create`.
+- When a task requires multiple sequential PRs, complete each PR
+  end-to-end before starting the next: edit, show diff, get commit
+  approval, commit, push, create PR, present to user. Do not start
+  work on a subsequent PR until the prior one is committed, pushed,
+  and opened. Sequential PRs are not parallel work.
 
 ## CI
 
