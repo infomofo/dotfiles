@@ -165,8 +165,9 @@ Once approved, apply changes in this order:
      - Good: `- Do not comment on import ordering — the project does not enforce a specific order.`
      - Bad: `- Don't comment on style.`
    - If no `.github/instructions/` directory exists, create one with a scoped `review.instructions.md`.
-
-Run lint and tests to confirm nothing broke.
+3. **Run lint and tests** after ALL changes (code fixes + instruction
+   updates) are applied. Do not proceed to the next step until they
+   pass. If any file was modified since the last test run, rerun.
 
 ## Self-Review Pass — Anticipate the Next Cycle
 

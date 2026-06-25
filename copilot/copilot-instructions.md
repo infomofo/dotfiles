@@ -65,6 +65,9 @@ the conflict and let the user decide.
 2. `git status` — check for untracked files that should not be staged.
 3. `git diff --stat` — show what will be committed. Wait for approval
    before proceeding.
+4. Verify lint and tests have passed on the current working tree. If
+   any files were modified since the last successful test run, rerun
+   before committing. No exceptions for "trivial" or "non-code" changes.
 
 ### Pre-push checklist (run every time, no exceptions)
 
