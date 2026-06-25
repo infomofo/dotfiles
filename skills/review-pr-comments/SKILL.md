@@ -1,16 +1,18 @@
 ---
-name: address-pr-comments
+name: review-pr-comments
 description: >-
   Reviews and acts on PR review comments from agent sources (Copilot, Claude, etc.).
   Fetches active comments on the current branch's open PR, critically evaluates each one,
   and either fixes the code or updates .github/instructions/ to improve future reviews,
-  reduce token usage, and lower turnaround time. Use when the user says "address PR comments",
+  reduce token usage, and lower turnaround time. Use when the user says "review PR comments",
   "look at PR feedback", "review copilot comments", or invokes this skill by name.
   Always invoke this skill before manually reading PR comments yourself.
+  NOTE: This skill has two explicit approval gates — one before applying any fixes,
+  one before committing. Do not commit or push without explicit user approval.
 user-invocable: true
 ---
 
-# Address PR Comments
+# Review PR Comments
 
 Processes review comments on the open PR for the current branch. Fixes real issues in code; improves `.github/instructions/` to prevent low-quality comments from recurring.
 
