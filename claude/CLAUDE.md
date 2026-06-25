@@ -23,6 +23,10 @@ the conflict and let the user decide.
   confirmed evidence that missing permissions are the root cause.
 - Data inconsistencies or broken references: report findings. If resolving
   requires choosing a value not stated in the codebase, ask first.
+- When you spot a potential issue (type mismatch, compatibility concern,
+  version difference), fix it in your output. Do not dismiss it with an
+  unverified assumption. Write the defensive version of the command/code.
+  Apply the fix to ALL affected commands/queries, not just the first one.
 
 ## Code
 
@@ -125,7 +129,10 @@ the conflict and let the user decide.
 
 ## Writing in the User's Voice
 
-When generating prose in the user's voice (notes, journal entries, articles):
+When generating prose in the user's voice (notes, journal entries, blog
+posts, articles, code reviews, PR descriptions, PR comments, Jira tickets,
+Jira comments, issues, Slack messages, emails, or any other text attributed
+to the user):
 
 Never use em-dashes. Use commas, periods, or restructure.
 

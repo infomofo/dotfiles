@@ -28,6 +28,20 @@ Files in `claude/` (no dot) are **global** config — symlinked into `~/.claude/
 
 `settings.json`, `CLAUDE.md`, and `skills/` are shared. Machine-local files like `settings.local.json`, `history.jsonl`, caches, and session state stay in `~/.claude/` untracked.
 
+### Syncing Claude and Copilot instructions
+
+`claude/CLAUDE.md` and `copilot/copilot-instructions.md` share most of their content. Claude is used for work (teamwork, GCP projects), Copilot is used for personal projects.
+
+When asked to sync changes between these files:
+
+- **Do sync:** Integrity rules, Code practices, Git rules, PR rules, CI rules, Communication, GitHub Identity, Writing in the User's Voice, and formatting conventions (line wrapping, whitespace).
+- **Do not sync:** Sections specific to teamwork or work infrastructure. These exist only in the Claude file and should stay that way:
+  - Branch names convention (`$USER/<short-description>`)
+  - Collaboration section
+  - GCP Authentication section
+  - Tooling section (Copilot has `Search from the repo root` under Code instead)
+  - Jira (acli) section
+
 ### Skills
 
 Shared agent skills live in `skills/`. Each skill is a subdirectory with a `SKILL.md` file containing YAML frontmatter and instructions. `setup.sh` symlinks `skills/` into both `~/.copilot/skills` and `~/.claude/skills` so they are available to both GitHub Copilot CLI and Claude Code on every machine.

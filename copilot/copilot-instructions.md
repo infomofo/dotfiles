@@ -23,6 +23,10 @@ the conflict and let the user decide.
   confirmed evidence that missing permissions are the root cause.
 - Data inconsistencies or broken references: report findings. If resolving
   requires choosing a value not stated in the codebase, ask first.
+- When you spot a potential issue (type mismatch, compatibility concern,
+  version difference), fix it in your output. Do not dismiss it with an
+  unverified assumption. Write the defensive version of the command/code.
+  Apply the fix to ALL affected commands/queries, not just the first one.
 
 ## Code
 
@@ -76,6 +80,7 @@ the conflict and let the user decide.
   a PR merge). NEVER assume you are still on the same branch. Always
   verify with `git branch --show-current` before any git write
   operation (commit, push, rebase, merge, checkout).
+
 ### Other git rules
 
 - Never force push. If a branch has diverged, stop and ask.
@@ -103,7 +108,10 @@ the conflict and let the user decide.
 ## CI
 
 - Run test/lint/build locally before pushing any commit.
-- Always run linters and test runners through the repo's virtual environment — never system-installed binaries. Use `poetry run ruff`, `poetry run pytest`, etc. System binaries may be different versions and will produce different results than CI.
+- Always run linters and test runners through the repo's virtual
+  environment — never system-installed binaries. Use `poetry run ruff`,
+  `poetry run pytest`, etc. System binaries may be different versions and
+  will produce different results than CI.
 - PRs modifying logic must include tests covering core behavior, boundary
   conditions, and edge cases. Follow existing test patterns.
 
@@ -121,7 +129,10 @@ the conflict and let the user decide.
 
 ## Writing in the User's Voice
 
-When generating prose in the user's voice (notes, blog posts, articles):
+When generating prose in the user's voice (notes, journal entries, blog
+posts, articles, code reviews, PR descriptions, PR comments, Jira tickets,
+Jira comments, issues, Slack messages, emails, or any other text attributed
+to the user):
 
 Never use em-dashes. Use commas, periods, or restructure.
 
