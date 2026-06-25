@@ -168,11 +168,27 @@ Once approved, apply changes in this order:
 
 Run lint and tests to confirm nothing broke.
 
+## Self-Review Pass — Anticipate the Next Cycle
+
+After all reactive fixes are applied and tests pass, perform a pre-flight self-review of the **full PR diff** to catch anything a future bot review would flag, before the push triggers another cycle.
+
+```bash
+gh pr view --json baseRefName --jq '.baseRefName'
+# then:
+git diff origin/<base>...HEAD
+```
+
+Load every file in `.github/instructions/` and match each file's `applyTo` glob against the changed files in the diff. For each changed file, apply the rules from every matching instructions file as if you are the reviewer.
+
+For each potential finding, apply the same triage logic as the **Evaluate Each Comment** section above.
+
+The goal is: after this push, no new bot comment should appear for code that was already in the diff before this commit.
+
 ## Present Changes and Wait for Approval to Commit
 
-After applying all fixes, summarize what was changed (files edited, rules added) and stop. Do not commit or push. Wait for the user to explicitly approve (e.g. "commit it", "looks good", "ship it") before staging and pushing.
+Include proactive self-review findings in the summary, clearly labeled **Proactive (self-review)**, so the user can distinguish them from reactive fixes.
 
-Once the user approves, stage all changed source files and updated/created instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the current branch (the PR branch).
+Stop and wait for explicit approval (e.g. "commit it", "looks good", "ship it"). Once approved, commit all changed source and instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch.
 
 ## Resolve Bot Threads
 
