@@ -149,10 +149,13 @@ dynamic, realm, embark, vibrant.
 - "Make a PR off [branch]": create a new branch from it, commit there,
   PR targeting the original branch as base. Confirm if unsure.
 
-## Before Pushing
+## GCP Authentication
 
-- Auth failure (e.g. `invalid_grant`): run `gcloud auth application-default
-  login` directly. The user will complete the browser flow.
+- Auth failure (e.g. `invalid_grant`, `Reauthentication failed`): run
+  `gcloud auth login` directly (for CLI commands) or
+  `gcloud auth application-default login` (for ADC/library calls).
+  Do not tell the user to run these — just run them. The browser
+  flow will open automatically.
 
 ## Tooling
 
