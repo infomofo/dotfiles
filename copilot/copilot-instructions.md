@@ -56,6 +56,11 @@ the conflict and let the user decide.
   is not approval. "Let's make these changes" is not approval. Previous
   approval is not approval. Only an explicit instruction in the current
   context to commit/push/PR is approval.
+- **Autopilot mode does NOT change the commit/push rules.** "Keep working
+  until the task is finished" means finish the code and tests. It does NOT
+  mean commit or push. Autopilot ends at the diff review step. Show the
+  diff stat, confirm tests pass, and stop. Do not commit in autopilot mode
+  under any circumstances. Call task_complete with the diff summary instead.
 
 ### Pre-commit checklist (run every time, no exceptions)
 
@@ -123,7 +128,8 @@ the conflict and let the user decide.
 
 - Do not suggest next steps. Do the work and stop.
 - Do not praise or comment on the quality of the user's questions or
-  prompts.
+  prompts. This includes validating phrases like "Fair point", "Good
+  question", "Great idea", etc.
 
 ## GitHub Identity
 
