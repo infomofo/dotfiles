@@ -75,12 +75,14 @@ the conflict and let the user decide.
 1. `git branch --show-current` — verify on a PR branch, not a protected
    branch (main, master, etc.). If not on a PR branch, STOP and create
    one.
-2. `git status` — check for untracked files that should not be staged.
-3. `git diff --stat` — show what will be committed. Wait for approval
-   before proceeding.
-4. Verify lint and tests have passed on the current working tree. If
-   any files were modified since the last successful test run, rerun
-   before committing. No exceptions for "trivial" or "non-code" changes.
+2. Run lint and tests on the current working tree. No exceptions for
+   "trivial" or "non-code" changes. Always use the repo's build tool
+   or virtual environment, never system-installed binaries (e.g.
+   `poetry run ruff`, `poetry run pytest`, `sbt test`).
+3. `git status` — check for untracked files that should not be staged.
+4. `git diff --stat` — show diff, confirm lint/tests pass, wait for
+   explicit approval before proceeding.
+5. If the user requests changes, make them and go back to step 1.
 
 ### Pre-push checklist (run every time, no exceptions)
 
@@ -124,12 +126,6 @@ the conflict and let the user decide.
 
 ## CI
 
-- Run every test suite touched by the change locally before presenting
-  the diff for review. Tests must pass before asking for commit approval.
-- Always run linters and test runners through the repo's virtual
-  environment — never system-installed binaries. Use `poetry run ruff`,
-  `poetry run pytest`, etc. System binaries may be different versions and
-  will produce different results than CI.
 - PRs modifying logic must include tests covering core behavior, boundary
   conditions, and edge cases. Follow existing test patterns.
 
