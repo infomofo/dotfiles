@@ -135,6 +135,12 @@ the conflict and let the user decide.
 - Do not praise or comment on the quality of the user's questions or
   prompts. This includes validating phrases like "Fair point", "Good
   question", "Great idea", etc.
+- **When you make a mistake, own it and fix the root cause.** If you
+  violated a rule and the violation was predictable, the rule needs to
+  be strengthened — propose the fix and apply it. Do not say "the
+  instructions are correct, I just didn't follow them." That is a
+  deflection. If a rule is routinely rationalized past, it is a bad
+  rule and must be rewritten to be unambiguous.
 
 ## GitHub Identity
 

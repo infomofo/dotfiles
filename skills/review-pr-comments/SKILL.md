@@ -191,6 +191,8 @@ Include proactive self-review findings in the summary, clearly labeled **Proacti
 
 Stop and wait for explicit approval (e.g. "commit it", "looks good", "ship it"). Once approved, commit all changed source and instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch.
 
+**This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "approve to commit?". If you skip this gate, you have violated the skill contract.
+
 ## Resolve Bot Threads
 
 The thread IDs were already fetched above. For each unresolved bot thread that was addressed (fixed in code or handled via instructions), resolve it:
