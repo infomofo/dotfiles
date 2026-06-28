@@ -205,3 +205,36 @@ mutation {
 ```
 
 Never resolve threads where the first comment's author is a human.
+
+## Request Re-review
+
+After resolving threads, re-request a Copilot review via GraphQL. The REST API and `gh pr edit --add-reviewer` don't support bots, but the GraphQL `requestReviews` mutation has a `botIds` field that does — including re-requesting after a bot has already reviewed.
+
+Step 1 — get the PR node ID (already available from the reviewThreads query above if you saved it; otherwise fetch it):
+```bash
+gh api graphql -f query='
+query {
+  repository(owner: "{owner}", name: "{repo}") {
+    pullRequest(number: {number}) { id }
+  }
+}'
+```
+
+Step 2 — request the review:
+```bash
+gh api graphql -f query='
+mutation {
+  requestReviews(input: {
+    pullRequestId: "{pr_node_id}",
+    botIds: ["BOT_kgDOCnlnWA"]
+  }) {
+    pullRequest {
+      reviewRequests(first: 5) {
+        nodes { requestedReviewer { ... on Bot { login } } }
+      }
+    }
+  }
+}'
+```
+
+`BOT_kgDOCnlnWA` is the stable node ID for `copilot-pull-request-reviewer`. If the mutation returns the bot login in `reviewRequests`, the re-request succeeded.
