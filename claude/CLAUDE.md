@@ -79,6 +79,12 @@ the conflict and let the user decide.
    "trivial" or "non-code" changes. Always use the repo's build tool
    or virtual environment, never system-installed binaries (e.g.
    `poetry run ruff`, `poetry run pytest`, `sbt test`).
+   - Before running any lint/test command, read the project's Makefile
+     (or equivalent) to find the canonical invocation. Use it exactly.
+   - If a tool is not installed in the local virtual environment, STOP.
+     Do not fall back to a system binary. Report the gap and ask.
+   - Never guess at config file paths (`--config`). Read the Makefile
+     or pyproject.toml to find the correct invocation.
 3. `git status` — check for untracked files that should not be staged.
 4. `git diff --stat` — show diff, confirm lint/tests pass, wait for
    explicit approval before proceeding.
