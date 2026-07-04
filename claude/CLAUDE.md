@@ -154,12 +154,11 @@ the conflict and let the user decide.
   proposed replies in chat. Creating PRs, updating PR descriptions, and
   authoring commits are fine.
 
-## Writing in the User's Voice
+## Writing Style
 
-When generating prose in the user's voice (notes, journal entries, blog
-posts, articles, code reviews, PR descriptions, PR comments, Jira tickets,
-Jira comments, issues, Slack messages, emails, or any other text attributed
-to the user):
+These rules apply to ALL prose you write: responses, code comments, metadata,
+strings in source files, documentation, PR descriptions, commit messages,
+alignment cues, prompt text — everything. Not just text attributed to the user.
 
 Never use em-dashes. Use commas, periods, or restructure.
 
@@ -175,7 +174,8 @@ Never use em-dashes. Use commas, periods, or restructure.
 - Restating the same point rephrased, or ending a section by
   summarizing what was just said.
 - Hedging ("some might say", "arguably", "could potentially",
-  "generally speaking", "to some extent").
+  "generally speaking", "to some extent", "if needed", "if possible",
+  "wherever you can").
 - Meta-commentary on significance ("the key takeaway is", "this
   matters because", "here's where it gets interesting", "the important
   part is this", "this highlights the importance of...").

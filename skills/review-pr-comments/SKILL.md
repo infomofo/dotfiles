@@ -185,13 +185,15 @@ For each potential finding, apply the same triage logic as the **Evaluate Each C
 
 The goal is: after this push, no new bot comment should appear for code that was already in the diff before this commit.
 
-## Present Changes and Wait for Approval to Commit
+## ⛔ STOP — Present Changes and Wait for Approval to Commit
 
 Include proactive self-review findings in the summary, clearly labeled **Proactive (self-review)**, so the user can distinguish them from reactive fixes.
 
-Stop and wait for explicit approval (e.g. "commit it", "looks good", "ship it"). Once approved, commit all changed source and instructions files together. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch.
+**YOU MUST END YOUR RESPONSE HERE** with the diff summary and the explicit question: "Approve to commit?" Do not write any further tool calls or prose after asking. Do not commit, push, or resolve threads in this same response. Wait for the user's next message.
 
-**This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "approve to commit?". If you skip this gate, you have violated the skill contract.
+Once the user explicitly approves (e.g. "commit it", "yes", "ship it"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch.
+
+**This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "Approve to commit?". If you skip this gate, you have violated the skill contract.
 
 ## Resolve Bot Threads
 
