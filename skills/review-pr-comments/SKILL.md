@@ -24,9 +24,22 @@ gh pr view --json number,url
 ```
 If no open PR exists for the current branch, tell the user and stop.
 
-Fetch all review threads (up to 100) using GraphQL, retrieving only the first comment of each thread (sufficient for triage). Filter locally to those that are unresolved and not outdated. Note: if a PR has more than 100 threads, threads beyond the first 100 will be silently skipped — this is acceptable for typical PRs.
+Fetch all review threads (up to 100) using GraphQL, retrieving only the first comment of each thread (sufficient for triage). Before filtering threads, also fetch the PR's deleted files so threads on deleted paths can be skipped — those comments are stale by definition.
 
 Substitute `{owner}` and `{repo}` from the current repository (e.g., via `gh repo view --json owner,name`) and `{number}` from the PR number fetched above.
+
+First, get the list of deleted files in the PR:
+```bash
+gh api repos/{owner}/{repo}/pulls/{number}/files \
+  | python3 -c "
+import json, sys
+files = json.load(sys.stdin)
+deleted = {f['filename'] for f in files if f.get('status') == 'removed'}
+print('\n'.join(sorted(deleted)))
+"
+```
+
+Then fetch threads, skipping any whose path is in the deleted files set:
 
 ```bash
 gh api graphql -f query='
@@ -58,20 +71,28 @@ if 'errors' in data:
 pr = data.get('data', {}).get('repository', {}).get('pullRequest')
 if not pr:
     sys.exit('PR not found or insufficient permissions')
+
+# Pass deleted_files as a comma-separated env var, or leave empty
+import os
+deleted = set(os.environ.get('DELETED_FILES', '').split(',')) - {''}
+
 threads = pr.get('reviewThreads', {}).get('nodes', [])
 for t in threads:
     if not t:
         continue
     if t.get('isResolved'):
         continue
-    # isOutdated means the line shifted after a new commit, not that the issue is gone.
-    # Still triage these — the code may still have the problem.
     comments = t.get('comments', {}).get('nodes') or []
     if not comments:
         continue
     c = comments[0]
+    path = c.get('path') or ''
+    if path in deleted:
+        continue  # thread is on a deleted file — skip, stale by definition
+    # isOutdated means the line shifted after a new commit, not that the issue is gone.
+    # Still triage these — the code may still have the problem.
     author = c.get('author') or {}
-    print(f\"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {c.get('path')}:{c.get('line')} thread:{t.get('id')}\")
+    print(f\"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {path}:{c.get('line')} thread:{t.get('id')}\")
     print(c.get('body', '')[:300])
     print()
 "
