@@ -190,6 +190,15 @@ Once approved, apply changes in this order:
    updates) are applied. Do not proceed to the next step until they
    pass. If any file was modified since the last test run, rerun.
 
+4. **Accuracy audit of changed code and surrounding context.** For every file modified in this skill run, read the current state of the file and check:
+   - Inline comments and doc comments that reference the changed code: do they still describe what the code actually does?
+   - Comments that reference line numbers, method names, variable names, or behavior that was altered: update them to match reality.
+   - Any test descriptions (`it(...)`, `describe(...)`, assertion messages) that describe the behavior under test: confirm they still match what the code does.
+   - Any README or `.github/instructions/` content that documents the changed behavior: verify it is still accurate and update if not.
+   - Dead comments: comments that described a previous approach and no longer apply. Remove them.
+
+   This step is about internal consistency. It is not a code review. Do not introduce new logic — only fix stale prose and comments.
+
 ## Self-Review Pass — Anticipate the Next Cycle
 
 After all reactive fixes are applied and tests pass, perform a pre-flight self-review of the **full PR diff** to catch anything a future bot review would flag, before the push triggers another cycle.
@@ -204,6 +213,18 @@ Load every file in `.github/instructions/` and match each file's `applyTo` glob 
 
 For each potential finding, apply the same triage logic as the **Evaluate Each Comment** section above.
 
+**Mandatory proactive checks** — run these explicitly on the full diff, every time:
+
+1. **Em-dashes.** Run `grep -rn " — " <all files touched by the diff>`. Fix every instance found. This is the single most common source of repeat bot comments. Do not rely on memory or the reviewer to catch them.
+
+2. **Clickable elements without keyboard accessibility.** For every element introduced in the diff that has a click handler, verify it is keyboard reachable and has a visible or programmatic label. The specific requirements vary by framework — check the project's existing conventions for how interactive non-button elements are made accessible (e.g., native button, role, tabindex, framework-specific props). Flag every element that diverges from that pattern and fix all instances in the same pass.
+
+3. **Lint with a clean cache.** Before presenting the final diff, run the project's lint command with any caches cleared if the project uses a build-tool-integrated linter. Stale caches from other branches can produce false positives or suppress real errors.
+
+4. **Conflict resolution completeness.** If this skill run involved resolving merge conflicts, run lint immediately after resolution before doing anything else. Conflict markers can leave structurally broken templates that pass a visual check but fail the parser.
+
+5. **Duplicate comment deduplication.** When the same logical issue is flagged in multiple threads (e.g., em-dashes in three files), treat them as a single fix item. Fix all instances in one pass and resolve all related threads together. Do not address one thread and leave identical threads open.
+
 The goal is: after this push, no new bot comment should appear for code that was already in the diff before this commit.
 
 ## ⛔ STOP — Present Changes and Wait for Approval to Commit
@@ -215,6 +236,26 @@ Include proactive self-review findings in the summary, clearly labeled **Proacti
 Once the user explicitly approves (e.g. "commit it", "yes", "ship it"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch.
 
 **This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "Approve to commit?". If you skip this gate, you have violated the skill contract.
+
+## Audit PR Title and Description
+
+Before requesting re-review, fetch the current PR title and body and check them against the actual state of the diff:
+
+```bash
+gh pr view --json title,body --jq '"Title: " + .title + "\n\nBody:\n" + .body'
+```
+
+Compare each claim in the title and body against `git diff origin/<base>...HEAD`. Flag any:
+- Features or behaviors claimed that are no longer present or were changed
+- Implementation details (component names, method names, file paths) that were renamed or removed
+- Scope descriptions that no longer match the actual files changed
+
+Update the PR title and/or body if inaccuracies are found:
+```bash
+gh pr edit --title "Accurate title" --body "Updated description"
+```
+
+Do this step silently — only surface changes to the user if the title or body required correction.
 
 ## Resolve Bot Threads
 
