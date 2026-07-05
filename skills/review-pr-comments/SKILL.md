@@ -9,6 +9,7 @@ description: >-
   Always invoke this skill before manually reading PR comments yourself.
   NOTE: This skill has two explicit approval gates — one before applying any fixes,
   one before committing. Do not commit or push without explicit user approval.
+  Once the user approves to commit, commit immediately — do not ask a third time.
 user-invocable: true
 ---
 
@@ -233,9 +234,9 @@ Include proactive self-review findings in the summary, clearly labeled **Proacti
 
 **YOU MUST END YOUR RESPONSE HERE** with the diff summary and the explicit question: "Approve to commit?" Do not write any further tool calls or prose after asking. Do not commit, push, or resolve threads in this same response. Wait for the user's next message.
 
-Once the user explicitly approves (e.g. "commit it", "yes", "ship it"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch.
+Once the user explicitly approves (e.g. "commit it", "yes", "ship it", "y", "approved"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch. Do NOT ask for approval again after the user has already approved — if they said "y" or equivalent in response to "Approve to commit?", that IS the approval; proceed immediately with the commit in that same response.
 
-**This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "Approve to commit?". If you skip this gate, you have violated the skill contract.
+**This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "Approve to commit?". If you skip this gate, you have violated the skill contract. However: once the user says "y" or equivalent after being shown "Approve to commit?", that is final — do not ask a third time.
 
 ## Audit PR Title and Description
 
