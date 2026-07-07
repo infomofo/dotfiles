@@ -25,7 +25,7 @@ gh pr view --json number,url
 ```
 If no open PR exists for the current branch, tell the user and stop.
 
-Fetch all review threads (up to 100) using GraphQL, retrieving only the first comment of each thread (sufficient for triage). Before filtering threads, also fetch the PR's deleted files so threads on deleted paths can be skipped — those comments are stale by definition.
+Fetch all review threads (up to 100) using GraphQL, retrieving up to 100 comments per thread so human replies to bot comments are visible. Before filtering threads, also fetch the PR's deleted files so threads on deleted paths can be skipped — those comments are stale by definition.
 
 Substitute `{owner}` and `{repo}` from the current repository (e.g., via `gh repo view --json owner,name`) and `{number}` from the PR number fetched above.
 
@@ -52,7 +52,7 @@ query {
           id
           isResolved
           isOutdated
-          comments(first: 1) {
+          comments(first: 100) {
             nodes {
               path
               line
@@ -83,10 +83,10 @@ for t in threads:
         continue
     if t.get('isResolved'):
         continue
-    comments = t.get('comments', {}).get('nodes') or []
-    if not comments:
+    all_comments = t.get('comments', {}).get('nodes') or []
+    if not all_comments:
         continue
-    c = comments[0]
+    c = all_comments[0]
     path = c.get('path') or ''
     if path in deleted:
         continue  # thread is on a deleted file — skip, stale by definition
@@ -95,6 +95,19 @@ for t in threads:
     author = c.get('author') or {}
     print(f\"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {path}:{c.get('line')} thread:{t.get('id')}\")
     print(c.get('body', '')[:300])
+
+    # Surface human replies — these carry more weight than the bot opener
+    # Convention: GitHub sets __typename to 'Bot' for all automated actors.
+    # Any non-Bot author is treated as human for triage purposes.
+    human_replies = [
+        r for r in all_comments[1:]
+        if (r.get('author') or {}).get('__typename') != 'Bot'
+    ]
+    if human_replies:
+        print(f\"  *** {len(human_replies)} HUMAN REPLY — treat as higher priority than bot opener ***\")
+        for r in human_replies:
+            r_author = r.get('author') or {}
+            print(f\"  [{r_author.get('login', 'unknown')}]: {r.get('body', '')[:300]}\")
     print()
 "
 ```
@@ -115,6 +128,8 @@ for r in json.load(sys.stdin):
 A comment is agent-sourced when `author.__typename == "Bot"` (GraphQL) or `user.type == "Bot"` (REST). These are different fields in different API responses — apply the correct check for each source.
 
 Human comments: fix the issue if it's valid. If not, surface them to the user verbatim without acting.
+
+**Human replies inside bot-opened threads carry the highest priority.** When a human has replied to a bot thread, treat the human's position as authoritative: if they say the issue is real, fix it even if you would otherwise dismiss the bot comment; if they say it's intentional or fine, surface it as a human dismissal. Always show human replies to the user verbatim in the action plan.
 
 ## Evaluate Each Comment
 
@@ -271,7 +286,7 @@ mutation {
 }'
 ```
 
-Never resolve threads where the first comment's author is a human.
+Never resolve threads where the first comment's author is a human. Never resolve a bot-opened thread that has human replies — those require the user's attention.
 
 ## Request Re-review
 
