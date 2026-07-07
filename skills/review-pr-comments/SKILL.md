@@ -25,7 +25,7 @@ gh pr view --json number,url
 ```
 If no open PR exists for the current branch, tell the user and stop.
 
-Fetch all review threads (up to 100) using GraphQL, retrieving all comments in each thread so human replies to bot comments are visible. Before filtering threads, also fetch the PR's deleted files so threads on deleted paths can be skipped — those comments are stale by definition.
+Fetch all review threads (up to 100) using GraphQL, retrieving up to 100 comments per thread so human replies to bot comments are visible. Before filtering threads, also fetch the PR's deleted files so threads on deleted paths can be skipped — those comments are stale by definition.
 
 Substitute `{owner}` and `{repo}` from the current repository (e.g., via `gh repo view --json owner,name`) and `{number}` from the PR number fetched above.
 
@@ -52,7 +52,7 @@ query {
           id
           isResolved
           isOutdated
-          comments(first: 20) {
+          comments(first: 100) {
             nodes {
               path
               line
@@ -97,6 +97,8 @@ for t in threads:
     print(c.get('body', '')[:300])
 
     # Surface human replies — these carry more weight than the bot opener
+    # Convention: GitHub sets __typename to 'Bot' for all automated actors.
+    # Any non-Bot author is treated as human for triage purposes.
     human_replies = [
         r for r in all_comments[1:]
         if (r.get('author') or {}).get('__typename') != 'Bot'
