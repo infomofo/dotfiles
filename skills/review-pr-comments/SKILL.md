@@ -165,6 +165,7 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 - Repeats the same point across multiple instances of an established pattern
 - Is factually wrong, misreads the diff, or points to a non-existent issue — update instructions to prevent that **class** of comment from recurring, not just the specific instance
 - Is too vague to produce an actionable change — update instructions to require specificity
+- Suggests adding a documentation rule or convention for something already enforced by automated tooling (linting, CI, schema validation, type checking, tests, etc.) — the automated enforcement is sufficient; a redundant prose rule adds noise without value
 
 **Instructions updates must address the root cause, not the symptom.** If the reviewer opened 8 threads saying the same thing, the instructions fix should make that entire class of comment impossible going forward — not just suppress that one file or one pattern name. Write the rule so a reviewer who has never seen this PR would know not to make that comment.
 
