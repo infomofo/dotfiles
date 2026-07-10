@@ -25,7 +25,7 @@ gh pr view --json number,url
 ```
 If no open PR exists for the current branch, tell the user and stop.
 
-Fetch all review threads (up to 100) using GraphQL, retrieving up to 100 comments per thread so human replies to bot comments are visible. Before filtering threads, also fetch the PR's deleted files so threads on deleted paths can be skipped — those comments are stale by definition.
+Fetch all review threads (paginating past 100 if needed) using GraphQL, retrieving up to 100 comments per thread so human replies to bot comments are visible. Before filtering threads, also fetch the PR's deleted files so threads on deleted paths can be skipped — those comments are stale by definition.
 
 Substitute `{owner}` and `{repo}` from the current repository (e.g., via `gh repo view --json owner,name`) and `{number}` from the PR number fetched above.
 
@@ -40,48 +40,64 @@ print('\n'.join(sorted(deleted)))
 "
 ```
 
-Then fetch threads, skipping any whose path is in the deleted files set:
+Then fetch ALL threads with pagination. Run page 1, check `hasNextPage`, and continue with `after:` cursor until exhausted. Use this script which handles pagination automatically:
 
 ```bash
-gh api graphql -f query='
-query {
-  repository(owner: "{owner}", name: "{repo}") {
-    pullRequest(number: {number}) {
-      reviewThreads(first: 100) {
-        nodes {
+python3 - << 'PYEOF'
+import subprocess, json, sys, os
+
+owner = "infomofo"  # substitute actual owner
+repo  = "vinyasa-me"  # substitute actual repo
+number = 17  # substitute actual PR number
+deleted = set(os.environ.get('DELETED_FILES', '').split(',')) - {''}
+
+cursor = None
+all_threads = []
+
+while True:
+    after_arg = f', after: "{cursor}"' if cursor else ''
+    query = f'''
+query {{
+  repository(owner: "{owner}", name: "{repo}") {{
+    pullRequest(number: {number}) {{
+      reviewThreads(first: 100{after_arg}) {{
+        pageInfo {{ hasNextPage endCursor }}
+        nodes {{
           id
           isResolved
           isOutdated
-          comments(first: 100) {
-            nodes {
+          comments(first: 100) {{
+            nodes {{
               path
               line
               body
-              author { login __typename }
-            }
-          }
-        }
-      }
-    }
-  }
-}' | python3 -c "
-import json, sys
-data = json.load(sys.stdin)
-if 'errors' in data:
-    sys.exit('GraphQL errors: ' + json.dumps(data['errors']))
-pr = data.get('data', {}).get('repository', {}).get('pullRequest')
-if not pr:
-    sys.exit('PR not found or insufficient permissions')
+              author {{ login __typename }}
+            }}
+          }}
+        }}
+      }}
+    }}
+  }}
+}}'''
+    result = subprocess.run(
+        ['gh', 'api', 'graphql', '-f', f'query={query}'],
+        capture_output=True, text=True
+    )
+    data = json.loads(result.stdout)
+    if 'errors' in data:
+        sys.exit('GraphQL errors: ' + json.dumps(data['errors']))
+    pr = data.get('data', {}).get('repository', {}).get('pullRequest')
+    if not pr:
+        sys.exit('PR not found or insufficient permissions')
+    rt = pr.get('reviewThreads', {})
+    all_threads.extend(rt.get('nodes', []))
+    pi = rt.get('pageInfo', {})
+    if not pi.get('hasNextPage'):
+        break
+    cursor = pi.get('endCursor')
 
-# Pass deleted_files as a comma-separated env var, or leave empty
-import os
-deleted = set(os.environ.get('DELETED_FILES', '').split(',')) - {''}
-
-threads = pr.get('reviewThreads', {}).get('nodes', [])
-for t in threads:
-    if not t:
-        continue
-    if t.get('isResolved'):
+for t in all_threads:
+    if not t or t.get('isResolved'):
         continue
     all_comments = t.get('comments', {}).get('nodes') or []
     if not all_comments:
@@ -89,28 +105,24 @@ for t in threads:
     c = all_comments[0]
     path = c.get('path') or ''
     if path in deleted:
-        continue  # thread is on a deleted file — skip, stale by definition
-    # isOutdated means the line shifted after a new commit, not that the issue is gone.
-    # Still triage these — the code may still have the problem.
+        continue
     author = c.get('author') or {}
-    print(f\"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {path}:{c.get('line')} thread:{t.get('id')}\")
+    print(f"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {path}:{c.get('line')} thread:{t.get('id')}")
     print(c.get('body', '')[:300])
-
-    # Surface human replies — these carry more weight than the bot opener
-    # Convention: GitHub sets __typename to 'Bot' for all automated actors.
-    # Any non-Bot author is treated as human for triage purposes.
     human_replies = [
         r for r in all_comments[1:]
         if (r.get('author') or {}).get('__typename') != 'Bot'
     ]
     if human_replies:
-        print(f\"  *** {len(human_replies)} HUMAN REPLY — treat as higher priority than bot opener ***\")
+        print(f"  *** {len(human_replies)} HUMAN REPLY — treat as higher priority than bot opener ***")
         for r in human_replies:
             r_author = r.get('author') or {}
-            print(f\"  [{r_author.get('login', 'unknown')}]: {r.get('body', '')[:300]}\")
+            print(f"  [{r_author.get('login', 'unknown')}]: {r.get('body', '')[:300]}")
     print()
-"
+PYEOF
 ```
+
+**Important:** substitute the actual `owner`, `repo`, and `number` values before running. Do not hardcode them.
 
 Also fetch top-level review summaries from bots:
 ```bash
