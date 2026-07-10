@@ -133,6 +133,20 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 
 ## Evaluate Each Comment
 
+**Before triaging any comment, run this checklist:**
+
+1. **Verify the claim in full file context, not just the diff hunk.** If the comment says "X is not imported", "Y is not loaded", or "Z will not work" — read the complete file, not just the changed lines. Do not accept the claim if `import X`, the CDN link, or the config value appears elsewhere in the file or in another file the diff touches.
+
+2. **Do not accept "broken" claims when CI passes.** Missing fonts, broken layouts, incorrect rendering, bad config shapes — all produce visible failures that CI and the dev server surface immediately. If CI passes and the app serves, the claimed breakage is likely wrong. Flag it as an instructions update, not a code fix.
+
+3. **Distinguish "not the recommended pattern" from "broken".** A pattern that deviates from a framework's documented ideal but produces correct behavior is not a bug. Only treat something as broken if you can state the specific user-visible failure and the exact inputs that trigger it. "This is not how the framework recommends it" is not actionable.
+
+4. **Deduplicate before acting.** If a comment is the third (or fifth, or eighth) thread flagging the same issue in this PR, it is a duplicate. Fix the issue once, resolve all duplicate threads together, and add an instructions rule to prevent recurrence. Do not handle each thread individually.
+
+5. **Check branch context.** On `ui/framework-*` evaluation branches, the goal is assessing UI behavior and developer experience, not production optimization. Do not flag tree-shaking, bundle size, wildcard imports, or "not the recommended pattern" concerns on these branches.
+
+---
+
 **Fix the code if the comment identifies:**
 - A real bug, logic error, or security issue
 - Invalid markup that affects rendering or accessibility
@@ -149,8 +163,10 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 - Recommends patterns inconsistent with how the codebase is already written
 - Flags intentional decisions that are consistent throughout the codebase
 - Repeats the same point across multiple instances of an established pattern
-- Is factually wrong, misreads the diff, or points to a non-existent issue — update instructions to prevent that class of comment from recurring
+- Is factually wrong, misreads the diff, or points to a non-existent issue — update instructions to prevent that **class** of comment from recurring, not just the specific instance
 - Is too vague to produce an actionable change — update instructions to require specificity
+
+**Instructions updates must address the root cause, not the symptom.** If the reviewer opened 8 threads saying the same thing, the instructions fix should make that entire class of comment impossible going forward — not just suppress that one file or one pattern name. Write the rule so a reviewer who has never seen this PR would know not to make that comment.
 
 **A comment can require both a code fix and an instructions update.** For example, a comment may correctly identify one real issue while also making a factually wrong claim (e.g. flagging valid syntax as an error). In that case: fix the real issue in code AND add an instructions rule to suppress the wrong claim in future reviews.
 
