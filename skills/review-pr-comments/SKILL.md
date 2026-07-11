@@ -27,29 +27,30 @@ If no open PR exists for the current branch, tell the user and stop.
 
 Fetch all review threads (paginating past 100 if needed) using GraphQL, retrieving up to 100 comments per thread so human replies to bot comments are visible. Before filtering threads, also fetch the PR's deleted files so threads on deleted paths can be skipped — those comments are stale by definition.
 
-Substitute `{owner}` and `{repo}` from the current repository (e.g., via `gh repo view --json owner,name`) and `{number}` from the PR number fetched above.
-
-First, get the list of deleted files in the PR:
-```bash
-gh api repos/{owner}/{repo}/pulls/{number}/files \
-  | python3 -c "
-import json, sys
-files = json.load(sys.stdin)
-deleted = {f['filename'] for f in files if f.get('status') == 'removed'}
-print('\n'.join(sorted(deleted)))
-"
-```
-
-Then fetch ALL threads with pagination. Run page 1, check `hasNextPage`, and continue with `after:` cursor until exhausted. Use this script which handles pagination automatically:
+The following script is self-contained: it derives `owner`, `repo`, and `number` from `gh`, fetches deleted files, then paginates through all review threads.
 
 ```bash
 python3 - << 'PYEOF'
-import subprocess, json, sys, os
+import subprocess, json, sys
 
-owner = "infomofo"  # substitute actual owner
-repo  = "vinyasa-me"  # substitute actual repo
-number = 17  # substitute actual PR number
-deleted = set(os.environ.get('DELETED_FILES', '').split(',')) - {''}
+def run(cmd):
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0:
+        sys.exit(f'Command failed: {" ".join(cmd)}\n{r.stderr}')
+    try:
+        return json.loads(r.stdout)
+    except json.JSONDecodeError as e:
+        sys.exit(f'Failed to parse response from {" ".join(cmd)}: {e}\n{r.stdout[:200]}')
+
+repo_info = run(['gh', 'repo', 'view', '--json', 'owner,name'])
+owner = repo_info['owner']['login']
+repo = repo_info['name']
+
+pr_info = run(['gh', 'pr', 'view', '--json', 'number'])
+number = pr_info['number']
+
+files = run(['gh', 'api', f'repos/{owner}/{repo}/pulls/{number}/files'])
+deleted = {f['filename'] for f in files if f.get('status') == 'removed'}
 
 cursor = None
 all_threads = []
@@ -79,11 +80,7 @@ query {{
     }}
   }}
 }}'''
-    result = subprocess.run(
-        ['gh', 'api', 'graphql', '-f', f'query={query}'],
-        capture_output=True, text=True
-    )
-    data = json.loads(result.stdout)
+    data = run(['gh', 'api', 'graphql', '-f', f'query={query}'])
     if 'errors' in data:
         sys.exit('GraphQL errors: ' + json.dumps(data['errors']))
     pr = data.get('data', {}).get('repository', {}).get('pullRequest')
@@ -121,8 +118,6 @@ for t in all_threads:
     print()
 PYEOF
 ```
-
-**Important:** substitute the actual `owner`, `repo`, and `number` values before running. Do not hardcode them.
 
 Also fetch top-level review summaries from bots:
 ```bash
