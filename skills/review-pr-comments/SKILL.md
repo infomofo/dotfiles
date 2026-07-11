@@ -43,11 +43,13 @@ def run(cmd):
         sys.exit(f'Failed to parse response from {" ".join(cmd)}: {e}\n{r.stdout[:200]}')
 
 repo_info = run(['gh', 'repo', 'view', '--json', 'owner,name'])
-owner = repo_info['owner']['login']
-repo = repo_info['name']
+owner = (repo_info.get('owner') or {}).get('login') or sys.exit('Could not derive owner from gh repo view')
+repo = repo_info.get('name') or sys.exit('Could not derive repo from gh repo view')
 
 pr_info = run(['gh', 'pr', 'view', '--json', 'number'])
-number = pr_info['number']
+number = pr_info.get('number') or sys.exit('Could not derive PR number from gh pr view')
+
+print(f'owner={owner} repo={repo} number={number}')
 
 all_files = []
 page = 1
@@ -87,7 +89,7 @@ query {{
     }}
   }}
 }}'''
-    data = run(['gh', 'api', 'graphql', '-f', f'query={query}'])
+    data = run(['gh', 'api', 'graphql', '-f', f'query={query.strip()}'])
     if 'errors' in data:
         sys.exit('GraphQL errors: ' + json.dumps(data['errors']))
     pr = data.get('data', {}).get('repository', {}).get('pullRequest')
