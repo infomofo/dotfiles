@@ -49,8 +49,15 @@ repo = repo_info['name']
 pr_info = run(['gh', 'pr', 'view', '--json', 'number'])
 number = pr_info['number']
 
-files = run(['gh', 'api', '--paginate', f'repos/{owner}/{repo}/pulls/{number}/files'])
-deleted = {f['filename'] for f in files if f.get('status') == 'removed'}
+all_files = []
+page = 1
+while True:
+    batch = run(['gh', 'api', f'repos/{owner}/{repo}/pulls/{number}/files?per_page=100&page={page}'])
+    all_files.extend(batch)
+    if len(batch) < 100:
+        break
+    page += 1
+deleted = {f['filename'] for f in all_files if f.get('status') == 'removed'}
 
 cursor = None
 all_threads = []
