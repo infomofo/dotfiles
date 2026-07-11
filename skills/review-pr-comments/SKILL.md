@@ -27,7 +27,7 @@ If no open PR exists for the current branch, tell the user and stop.
 
 Fetch all review threads (paginating past 100 if needed) using GraphQL, retrieving up to 100 comments per thread so human replies to bot comments are visible. Before filtering threads, also fetch the PR's deleted files so threads on deleted paths can be skipped — those comments are stale by definition.
 
-The following script is self-contained: it derives `owner`, `repo`, and `number` from `gh`, fetches deleted files, then paginates through all review threads.
+Run this script to fetch all threads. It derives `owner`, `repo`, and `number` from `gh` automatically — no substitution needed. The subsequent commands still use `{owner}/{repo}/{number}` placeholders that you substitute from context.
 
 ```bash
 python3 - << 'PYEOF'
@@ -49,7 +49,7 @@ repo = repo_info['name']
 pr_info = run(['gh', 'pr', 'view', '--json', 'number'])
 number = pr_info['number']
 
-files = run(['gh', 'api', f'repos/{owner}/{repo}/pulls/{number}/files'])
+files = run(['gh', 'api', '--paginate', f'repos/{owner}/{repo}/pulls/{number}/files'])
 deleted = {f['filename'] for f in files if f.get('status') == 'removed'}
 
 cursor = None
@@ -87,7 +87,7 @@ query {{
     if not pr:
         sys.exit('PR not found or insufficient permissions')
     rt = pr.get('reviewThreads', {})
-    all_threads.extend(rt.get('nodes', []))
+    all_threads.extend(rt.get('nodes') or [])
     pi = rt.get('pageInfo', {})
     if not pi.get('hasNextPage'):
         break
