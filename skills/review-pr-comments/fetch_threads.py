@@ -35,7 +35,7 @@ while True:
     if len(batch) < 100:
         break
     page += 1
-deleted = {f['filename'] for f in all_files if f.get('status') == 'removed'}
+deleted = {f.get('filename') for f in all_files if f.get('status') == 'removed' and f.get('filename')}
 
 cursor = None
 all_threads = []

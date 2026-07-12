@@ -118,7 +118,7 @@ If a comment is stale — the issue was already fixed in a prior commit on this 
 
 Only include sections that have content. Omit any section with nothing to report.
 
-**Wait for explicit user approval before making any changes.** This approval only covers applying the fixes — it does not cover committing or pushing. Do not proceed until the user confirms.
+**Wait for explicit user approval before making any changes.** End your response with the explicit question: **"Approve to apply?"** This is Gate 1. It covers only applying the fixes listed above — it does not cover committing or pushing. Do not proceed until the user confirms.
 
 ## Apply Fixes
 
@@ -178,17 +178,20 @@ For each potential finding, apply the same triage logic as the **Evaluate Each C
 
 The goal is: after this push, no new bot comment should appear for code that was already in the diff before this commit.
 
-## ⛔ STOP — Present Changes and Wait for Approval to Commit
+## ⛔ STOP — Present Changes and Wait for Approval to Commit (Gate 2)
 
 Include proactive self-review findings in the summary, clearly labeled **Proactive (self-review)**, so the user can distinguish them from reactive fixes.
 
-**YOU MUST END YOUR RESPONSE HERE** with the diff summary and the explicit question: "Approve to commit?" Do not write any further tool calls or prose after asking. Do not commit, push, or resolve threads in this same response. Wait for the user's next message.
+**YOU MUST END YOUR RESPONSE HERE** with the diff summary and the explicit question: **"Approve to commit?"** This is Gate 2. Do not write any further tool calls or prose after asking. Do not commit, push, or resolve threads in this same response. Wait for the user's next message.
 
-Once the user explicitly approves (e.g. "commit it", "yes", "ship it", "y", "approved"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch. Then in that same response, continue with the remaining steps in order: audit the PR title and description, resolve bot threads, and request re-review.
+Once the user explicitly approves Gate 2 (e.g. "commit it", "yes", "ship it", "y", "approved"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch. Then in that same response, continue with the remaining steps in order: audit the PR title and description, resolve bot threads, and request re-review.
 
-**Approval covers only the exact diff shown at the moment it was given.** If any file changes after the user approves — for any reason — stop, show the new diff, and ask "Approve to commit?" again before committing. Do not carry approval forward across independent changes.
+**Approval covers only the gate it was given for, and only the exact diff shown at that moment.**
+- Approving Gate 1 ("Approve to apply?") means: go apply the listed fixes. It is not approval to commit.
+- Approving Gate 2 ("Approve to commit?") means: commit exactly the diff shown. If any file changes after Gate 2 approval — for any reason — stop, show the new diff, and ask "Approve to commit?" again.
+- Do not carry approval forward across gates or across independent changes.
 
-**This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "Approve to commit?".
+**This is a hard gate — not a soft suggestion.** Do not treat any response as Gate 2 approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "Approve to commit?".
 
 ## Audit PR Title and Description
 
