@@ -54,7 +54,7 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 
 **Human replies inside bot-opened threads carry the highest priority.** When a human has replied to a bot thread, treat the human's position as authoritative: if they say the issue is real, fix it even if you would otherwise dismiss the bot comment; if they say it's intentional or fine, surface it as a human dismissal. Always show human replies to the user verbatim in the action plan.
 
-If a comment is stale — the issue was already fixed in a prior commit on this branch — resolve the thread silently and exclude it from the action plan.
+If a comment is stale — the issue was already fixed in a prior commit on this branch — and has no human replies, resolve the thread silently and exclude it from the action plan. If it has human replies, surface those verbatim per the human reply rule above.
 
 ## Evaluate Each Comment
 
