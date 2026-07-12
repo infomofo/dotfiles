@@ -94,7 +94,7 @@ def print_threads(all_threads, deleted):
         print(c.get('body', '')[:300])
         human_replies = [
             r for r in all_comments[1:]
-            if (r.get('author') or {}).get('__typename') != 'Bot'
+            if (r.get('author') or {}).get('__typename') == 'User'
         ]
         if human_replies:
             print(f"  *** {len(human_replies)} HUMAN REPLY — treat as higher priority than bot opener ***")

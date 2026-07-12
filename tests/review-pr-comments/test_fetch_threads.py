@@ -193,6 +193,12 @@ class TestPrintThreads:
         assert "[alice]: reply one" in out
         assert "[bob]: reply two" in out
 
+    def test_null_author_reply_not_shown_as_human(self, capsys):
+        reply = {"path": "src/foo.py", "line": 10, "body": "orphaned",
+                 "author": None}
+        fetch_threads.print_threads([make_thread(extra_comments=[reply])], set())
+        assert "HUMAN REPLY" not in capsys.readouterr().out
+
     def test_missing_author_defaults_to_unknown(self, capsys):
         t = make_thread()
         t["comments"]["nodes"][0]["author"] = None
