@@ -184,9 +184,11 @@ Include proactive self-review findings in the summary, clearly labeled **Proacti
 
 **YOU MUST END YOUR RESPONSE HERE** with the diff summary and the explicit question: "Approve to commit?" Do not write any further tool calls or prose after asking. Do not commit, push, or resolve threads in this same response. Wait for the user's next message.
 
-Once the user explicitly approves (e.g. "commit it", "yes", "ship it", "y", "approved"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch. Then in that same response, continue with the remaining steps in order: audit the PR title and description, resolve bot threads, and request re-review. Do NOT ask for approval again after the user has already approved — if they said "y" or equivalent in response to "Approve to commit?", that IS the approval; proceed immediately with the commit in that same response.
+Once the user explicitly approves (e.g. "commit it", "yes", "ship it", "y", "approved"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch. Then in that same response, continue with the remaining steps in order: audit the PR title and description, resolve bot threads, and request re-review.
 
-**This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "Approve to commit?". If you skip this gate, you have violated the skill contract. However: once the user says "y" or equivalent after being shown "Approve to commit?", that is final — do not ask a third time.
+**Approval covers only the exact diff shown at the moment it was given.** If any file changes after the user approves — for any reason — stop, show the new diff, and ask "Approve to commit?" again before committing. Do not carry approval forward across independent changes.
+
+**This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "Approve to commit?".
 
 ## Audit PR Title and Description
 
