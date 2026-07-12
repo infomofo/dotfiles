@@ -1,4 +1,5 @@
 ---
+name: review-pr-comments
 description: >-
   Processes review comments on the open PR for the current branch. Fixes real
   issues in code; updates .github/instructions/ to prevent low-quality comments
@@ -8,12 +9,17 @@ when_to_use: >-
   copilot comments", or invokes this skill by name. Always invoke this skill
   before manually reading PR comments yourself.
 disable-model-invocation: true
+user-invocable: true
 allowed-tools: Bash(gh *) Bash(python3 *) Bash(git *) Bash(grep *)
 ---
 
 # Review PR Comments
 
 Processes review comments on the open PR for the current branch. Fixes real issues in code; improves `.github/instructions/` to prevent low-quality comments from recurring.
+
+**This skill has two hard approval gates:**
+1. **Action plan gate** — present the full plan and wait for explicit approval before touching any files.
+2. **Commit gate** — show the full diff and ask "Approve to commit?" before committing or pushing. This gate fires every time, even if the user approved the action plan.
 
 ## Fetch Comments
 
@@ -25,11 +31,7 @@ If no open PR exists for the current branch, tell the user and stop.
 
 Fetch all review threads (paginating past 100 if needed) using GraphQL, retrieving up to 100 comments per thread so human replies to bot comments are visible. Before filtering threads, the script also fetches the PR's deleted files so threads on deleted paths are skipped, and skips resolved and outdated threads.
 
-Run the bundled fetch script — it derives `owner`, `repo`, and `number` from `gh` automatically:
-
-```bash
-python3 ${CLAUDE_SKILL_DIR}/fetch_threads.py
-```
+Run the bundled [fetch_threads.py](./fetch_threads.py) script from this skill's base directory. It derives `owner`, `repo`, and `number` from `gh` automatically.
 
 The script prints `owner=... repo=... number=...` on the first line — save those values to substitute into the `{owner}/{repo}/{number}` placeholders used in later commands.
 
