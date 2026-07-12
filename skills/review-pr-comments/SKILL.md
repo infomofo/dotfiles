@@ -103,7 +103,7 @@ query {{
     cursor = pi.get('endCursor')
 
 for t in all_threads:
-    if not t or t.get('isResolved'):
+    if not t or t.get('isResolved') or t.get('isOutdated'):
         continue
     all_comments = t.get('comments', {}).get('nodes') or []
     if not all_comments:
@@ -147,19 +147,23 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 
 **Human replies inside bot-opened threads carry the highest priority.** When a human has replied to a bot thread, treat the human's position as authoritative: if they say the issue is real, fix it even if you would otherwise dismiss the bot comment; if they say it's intentional or fine, surface it as a human dismissal. Always show human replies to the user verbatim in the action plan.
 
+If a comment is stale — the issue was already fixed in a prior commit on this branch — resolve the thread silently and exclude it from the action plan.
+
 ## Evaluate Each Comment
 
 **Before triaging any comment, run this checklist:**
 
 1. **Verify the claim in full file context, not just the diff hunk.** If the comment says "X is not imported", "Y is not loaded", or "Z will not work" — read the complete file, not just the changed lines. Do not accept the claim if `import X`, the CDN link, or the config value appears elsewhere in the file or in another file the diff touches.
 
-2. **Require a repro or failing test for any "broken" claim.** A breakage claim is not actionable unless the reviewer provides a failing test case, a specific reproduction path, or a CI failure demonstrating the issue. CI passing is weak evidence — it does not prove visual correctness or catch rendering regressions without dedicated visual/e2e tests. CI failing is strong evidence. If neither a CI failure nor a repro exists, flag it as an instructions update requiring the reviewer to demonstrate the failure before raising the claim.
+2. **Search for the same pattern before accepting any "broken" or "incorrect" claim.** Run `grep -r "flagged-pattern" --include="*.ext" -l` across the codebase. If the same pattern exists in other files and CI is passing, the pattern is established — dismiss the comment. Write the instructions rule as a prerequisite, not a prohibition: "Before flagging X, check whether it already appears elsewhere in the project" — not "do not flag X in file Y". This makes the reviewer do the verification work first.
 
-3. **Distinguish "not the recommended pattern" from "broken".** A pattern that deviates from a framework's documented ideal but produces correct behavior is not a bug. Only treat something as broken if you can state the specific user-visible failure and the exact inputs that trigger it. "This is not how the framework recommends it" is not actionable.
+3. **Require evidence for any remaining "broken" claim.** If the pattern is new or the reviewer still claims breakage after checking, the claim is not actionable without a failing test, a reproduction path, or a CI failure. If none exist, write an instructions update requiring the reviewer to supply all three before raising the claim: the error it produces, the steps to reproduce it, and the linter rule or tool that catches it.
 
-4. **Deduplicate before acting.** If a comment is the third (or fifth, or eighth) thread flagging the same issue in this PR, it is a duplicate. Fix the issue once, resolve all duplicate threads together, and add an instructions rule to prevent recurrence. Do not handle each thread individually.
+4. **Distinguish "not the recommended pattern" from "broken".** A pattern that deviates from a framework's documented ideal but produces correct behavior is not a bug. Only treat something as broken if you can state the specific user-visible failure and the exact inputs that trigger it.
 
-5. **Check branch context.** On `ui/framework-*` evaluation branches, the goal is assessing UI behavior and developer experience, not production optimization. Do not flag tree-shaking, bundle size, wildcard imports, or "not the recommended pattern" concerns on these branches.
+5. **Deduplicate before acting.** If a comment is the third (or fifth, or eighth) thread flagging the same issue in this PR, it is a duplicate. Fix the issue once, resolve all duplicate threads together, and add an instructions rule to prevent recurrence. Do not handle each thread individually.
+
+6. **Check branch context.** On `ui/framework-*` evaluation branches, the goal is assessing UI behavior and developer experience, not production optimization. Do not flag tree-shaking, bundle size, wildcard imports, or "not the recommended pattern" concerns on these branches.
 
 ---
 
@@ -172,7 +176,7 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 **When a comment claims code is broken or has a bug:**
 1. Check whether an existing test already asserts on the claimed behavior. If one does, the comment is dismissed as incorrect — update `.github/instructions/` to tell the reviewer to check for existing tests before claiming breakage.
 2. If no test covers it and the bug is real, fix the code AND add a test that would have caught it.
-3. If no test covers it but the bug claim is wrong, add a test that demonstrates the code works correctly, then dismiss via instructions update. Include a rule in `.github/instructions/` that requires the reviewer to supply a failing test case or a specific reproduction path when claiming something is broken — without one, the claim is not actionable and should not be raised.
+3. If no test covers it but the bug claim is wrong, add a test that demonstrates the code works correctly, then dismiss via instructions update (see checklist item 3 for what the rule must require).
 
 **Update `.github/instructions/` if the comment:**
 - Is a style preference with no correctness impact
@@ -181,9 +185,10 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 - Repeats the same point across multiple instances of an established pattern
 - Is factually wrong, misreads the diff, or points to a non-existent issue — update instructions to prevent that **class** of comment from recurring, not just the specific instance
 - Is too vague to produce an actionable change — update instructions to require specificity
-- Suggests adding a documentation rule or convention for something already enforced by automated tooling (linting, CI, schema validation, type checking, tests, etc.) — the automated enforcement is sufficient; a redundant prose rule adds noise without value
+- Flags a pattern already caught by an existing CI or linter check — CI enforcement is sufficient; a prose rule is redundant
+- Flags a style, formatting, or linting concern not currently caught by CI — the right fix is adding a CI/linter rule, not a manual documentation rule; update instructions to direct the reviewer to propose a CI addition instead of a code review comment
 
-**Instructions updates must address the root cause, not the symptom.** If the reviewer opened 8 threads saying the same thing, the instructions fix should make that entire class of comment impossible going forward — not just suppress that one file or one pattern name. Write the rule so a reviewer who has never seen this PR would know not to make that comment.
+**Instructions updates must address the root cause, not the symptom.** The fix should eliminate that entire class of comment going forward — not suppress a specific file or pattern instance. Test: would a reviewer with no PR history still make the comment after reading the rule? If yes, the rule is too narrow. Prefer prerequisites ("before flagging X, verify Y") over prohibitions ("do not flag X in file Z").
 
 **A comment can require both a code fix and an instructions update.** For example, a comment may correctly identify one real issue while also making a factually wrong claim (e.g. flagging valid syntax as an error). In that case: fix the real issue in code AND add an instructions rule to suppress the wrong claim in future reviews.
 
@@ -218,14 +223,6 @@ Once approved, apply changes in this order:
 
    After applying each fix, check for side effects: identify all callers and consumers of the changed code and verify they still behave correctly with the new output. A fix that changes the shape or size of a data structure (e.g., adding entries to an exported array) must be followed by a scan of every place that structure is consumed in the PR diff. This is the most common source of second review cycles — the fix is correct in isolation but breaks a consumer.
 
-   When editing the embedded Python snippets in this file, verify all of these defensive patterns are present before committing:
-   - `errors` key checked in GraphQL response before traversing `data`
-   - All nested dict access uses `.get()` (e.g., `pr.get('reviewThreads', {}).get('nodes', [])`)
-   - Null thread nodes guarded: `if not t: continue`
-   - `isResolved`/`isOutdated` accessed via `.get()`
-   - Null `author` guarded: `author = c.get('author') or {}`
-   - Empty `nodes` list guarded before indexing
-   - `body`/`path`/`line` accessed via `.get()` with safe defaults
 2. **Instruction updates**: follow the naming and frontmatter conventions already present in the repo:
    - File names: `<topic>.instructions.md` — e.g. `review.instructions.md`, `vue.instructions.md`, `javascript.instructions.md`
    - Frontmatter: `applyTo:` scoped to the relevant file glob — e.g. `"src/**/*.vue"`, `"**/*.js,**/*.mjs"`, `"**"` for repo-wide
@@ -272,8 +269,6 @@ For each potential finding, apply the same triage logic as the **Evaluate Each C
 
 4. **Conflict resolution completeness.** If this skill run involved resolving merge conflicts, run lint immediately after resolution before doing anything else. Conflict markers can leave structurally broken templates that pass a visual check but fail the parser.
 
-5. **Duplicate comment deduplication.** When the same logical issue is flagged in multiple threads (e.g., em-dashes in three files), treat them as a single fix item. Fix all instances in one pass and resolve all related threads together. Do not address one thread and leave identical threads open.
-
 The goal is: after this push, no new bot comment should appear for code that was already in the diff before this commit.
 
 ## ⛔ STOP — Present Changes and Wait for Approval to Commit
@@ -282,7 +277,7 @@ Include proactive self-review findings in the summary, clearly labeled **Proacti
 
 **YOU MUST END YOUR RESPONSE HERE** with the diff summary and the explicit question: "Approve to commit?" Do not write any further tool calls or prose after asking. Do not commit, push, or resolve threads in this same response. Wait for the user's next message.
 
-Once the user explicitly approves (e.g. "commit it", "yes", "ship it", "y", "approved"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch. Do NOT ask for approval again after the user has already approved — if they said "y" or equivalent in response to "Approve to commit?", that IS the approval; proceed immediately with the commit in that same response.
+Once the user explicitly approves (e.g. "commit it", "yes", "ship it", "y", "approved"), commit all changed source and instructions files together in the *next* response. Write a commit message naming which comments were fixed in code and which were handled by updating instructions. Push to the PR branch. Then in that same response, continue with the remaining steps in order: resolve bot threads, audit the PR title and description, and request re-review. Do NOT ask for approval again after the user has already approved — if they said "y" or equivalent in response to "Approve to commit?", that IS the approval; proceed immediately with the commit in that same response.
 
 **This is a hard gate — not a soft suggestion.** Do not treat the user approving the *action plan* as approval to commit. Do not treat "yes", "go ahead", "defer it", or any other mid-flow response as commit approval unless it comes *after* you have shown the full diff of changes made and explicitly asked "Approve to commit?". If you skip this gate, you have violated the skill contract. However: once the user says "y" or equivalent after being shown "Approve to commit?", that is final — do not ask a third time.
 
