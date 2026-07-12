@@ -64,7 +64,7 @@ If a comment is stale — the issue was already fixed in a prior commit on this 
 
 2. **Search for the same pattern before accepting any "broken" or "incorrect" claim.** Run `grep -r "flagged-pattern" --include="*.ext" -l` across the codebase. If the same pattern exists in other files and CI is passing, the pattern is established — dismiss the comment. Write the instructions rule as a prerequisite, not a prohibition: "Before flagging X, check whether it already appears elsewhere in the project" — not "do not flag X in file Y". This makes the reviewer do the verification work first.
 
-3. **Require evidence for any remaining "broken" claim.** If the pattern is new or the reviewer still claims breakage after checking, the claim is not actionable without a failing test, a reproduction path, or a CI failure. If none exist, write an instructions update requiring the reviewer to supply all three before raising the claim: the error it produces, the steps to reproduce it, and the linter rule or tool that catches it.
+3. **Require evidence for any remaining "broken" claim.** If the pattern is new or the reviewer still claims breakage after checking, require them to supply all three before the claim is actionable: the specific error it produces, the steps to reproduce it, and the linter rule or CI check that would catch it. Write an instructions update stating these requirements.
 
 4. **Distinguish "not the recommended pattern" from "broken".** A pattern that deviates from a framework's documented ideal but produces correct behavior is not a bug. Only treat something as broken if you can state the specific user-visible failure and the exact inputs that trigger it.
 

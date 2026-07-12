@@ -1,0 +1,14 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - run: pip install ruff pytest
+      - run: ruff check skills/review-pr-comments/ tests/
+      - run: pytest tests/review-pr-comments/ -v --import-mode=importlib --rootdir=.

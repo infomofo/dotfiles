@@ -3,3 +3,5 @@
 .DS_Store
 skills/t5t-generator/
 skills/bq-costly-query-identification/
+__pycache__/
+*.pyc
