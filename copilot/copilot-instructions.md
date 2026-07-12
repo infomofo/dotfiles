@@ -65,8 +65,12 @@ the conflict and let the user decide.
   the diff and stop. Wait for an explicit "commit", "push", "open a PR",
   or equivalent instruction. Silence is not approval. "Let's fix this"
   is not approval. "Let's make these changes" is not approval. Previous
-  approval is not approval. Only an explicit instruction in the current
-  context to commit/push/PR is approval.
+  approval is not approval. Approval answers only the specific question
+  asked — if a workflow has multiple gates (e.g. "Approve to apply?" then
+  later "Approve to commit?"), approval of an earlier gate is never
+  approval for a later one. Approval covers only the exact diff shown at
+  the moment it was given — any subsequent edit, however small, requires
+  showing a new diff and getting new approval before committing.
 - **Autopilot mode does NOT change the commit/push rules.** "Keep working
   until the task is finished" means finish the code and tests. It does NOT
   mean commit or push. Autopilot ends at the diff review step. Show the
