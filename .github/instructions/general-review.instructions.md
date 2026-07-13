@@ -6,7 +6,7 @@ applyTo: "**"
 
 ## Before You Start: Understand CI Coverage
 
-Before reviewing any file, identify what linters, formatters, type checkers, and tests run in CI for that file type. Read the CI config and Makefile (or equivalent). Anything CI already enforces is out of scope for your review. Do not speculate about whether code violates a rule that CI would catch. If CI passes, the code satisfies those checks.
+Before reviewing any file, identify what linters, formatters, type checkers, and tests run in CI for that file type. Read the CI config and Makefile (or equivalent). Anything CI already enforces is out of scope for your review. Do not speculate about whether code violates a rule that CI would catch. If CI passes, treat the code as satisfying those checks. If you believe CI is incorrectly passing (false negative, misconfigured rule, insufficient test coverage), you may comment, but you must explain specifically what is wrong with the CI setup, not just the code.
 
 ## Scope
 
@@ -43,8 +43,8 @@ Only comment on lines that were **added or modified** in the pull request diff. 
 Every gate must pass. If any fails, do not post.
 
 1. **90% confident it is a real defect.** A bug, data loss risk, security vulnerability, or incorrect behavior. Design preferences, portability suggestions, and hypothetical concerns are not defects.
-2. **Not already caught by CI.** If CI enforces the rule (per the coverage you identified before starting), do not comment. If you believe CI missed something, propose an improvement to CI, not a code comment.
-3. **Verified the claim.** Search the codebase for the same pattern; if it exists elsewhere and works, it is not a bug. Check runtime, platform, and tool docs. Read the full file context, not just the diff hunk. Confirm variables and config fields are not platform-provided built-ins before flagging them as undefined.
+2. **Not already caught by CI.** If CI enforces the rule (per the coverage you identified before starting), do not comment. If the defect falls outside CI's current coverage, comment on the code fix and propose a CI improvement that would catch this class of issue in the future.
+3. **Verified the claim.** Search the codebase for the same pattern; if it exists elsewhere and works, treat that as strong evidence of an established pattern, not a bug. (The same bug can exist in multiple places, but the burden of proof is on the reviewer to demonstrate it.) Check runtime, platform, and tool docs. Read the full file context, not just the diff hunk. Confirm variables and config fields are not platform-provided built-ins before flagging them as undefined.
 4. **Evidence or CI proposal.** Show proof (failing test, doc citation, reproduction steps) or propose a concrete linter rule, test, or CI step that would catch this class of issue. No unsupported "this looks wrong."
 5. **Not a nitpick.** "Will this break, lose data, or produce wrong results, or am I suggesting a different way to express the same correct idea?" If the latter, do not post.
 6. **Not a duplicate.** One comment at the most relevant location. List other occurrences in that comment.
