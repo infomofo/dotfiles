@@ -8,7 +8,6 @@ when_to_use: >-
   Use when the user says "review PR comments", "look at PR feedback", "review
   copilot comments", or invokes this skill by name. Always invoke this skill
   before manually reading PR comments yourself.
-disable-model-invocation: true
 user-invocable: true
 allowed-tools: Bash(gh *) Bash(python3 *) Bash(git *) Bash(grep *)
 ---
