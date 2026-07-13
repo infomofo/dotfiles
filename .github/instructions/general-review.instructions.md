@@ -1,5 +1,6 @@
 ---
 applyTo: "**"
+excludeAgent: "coding-agent"
 ---
 
 # General Code Review Instructions
