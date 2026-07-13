@@ -76,6 +76,18 @@ the conflict and let the user decide.
   mean commit or push. Autopilot ends at the diff review step. Show the
   diff stat, confirm tests pass, and stop. Do not commit in autopilot mode
   under any circumstances. Call task_complete with the diff summary instead.
+- **NEVER run `git push --force`, `git push --force-with-lease`, or any
+  force push variant.** No exceptions. No "the history was already
+  rewritten." No "it's my branch." If a push is rejected or history
+  has diverged, STOP and ask the user what to do.
+- **NEVER run `git commit --amend`.** Always create new commits. If the
+  user explicitly says "amend," confirm which commit before running it.
+  "Fix the last commit" is not "amend" unless the user literally says
+  the word "amend."
+- **NEVER run `git reset --hard` on a branch that has been pushed to a
+  remote.** This rewrites history and requires a force push to sync.
+  If you need to undo changes on a remote-tracking branch, use
+  `git revert` or ask the user.
 
 ### Pre-commit checklist (run every time, no exceptions)
 
@@ -108,11 +120,9 @@ the conflict and let the user decide.
 
 ### Other git rules
 
-- Never force push. If a branch has diverged, stop and ask.
 - Never delete remote branches or close PRs without explicit approval.
 - Never rebase to update a PR branch unless explicitly asked. Edit files
   and commit on top instead.
-- Only amend if explicitly asked. PR feedback: push new commits.
 - After resolving merge conflicts, verify files and run checks before
   committing.
 
