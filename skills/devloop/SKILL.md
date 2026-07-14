@@ -18,7 +18,7 @@ For UI/styling/layout work where visual verification matters.
 Check for an existing server first. **Two steps — both required:**
 
 ```bash
-# 1. Find the correct port from vite.config.js / next.config.js / package.json / README
+# 1. Find the correct port from vite.config.* / next.config.* / package.json / README
 #    Never use a port from memory or prior instructions without verifying against the config.
 
 # 2. Find the PID of any process listening on that port
@@ -39,7 +39,7 @@ If it is the correct server, reuse it. Otherwise, **always start with `detach: t
 
 Use `mode: "async"` with `detach: true` in the tool invocation (not in the bash command itself). Log output to `/tmp/<project>-dev.log` so you can inspect it later.
 
-Find the right command from `package.json`, `README`, or `AGENTS.md`. Find the port from `package.json`, `vite.config.js`, `next.config.js`, or `README` — not from `AGENTS.md` (it may be stale). Common examples:
+Find the right command from `package.json`, `README`, or `AGENTS.md`. Find the port from `package.json`, `vite.config.*`, `next.config.*`, or `README` — not from `AGENTS.md` (it may be stale). Common examples:
 - `npm run dev` / `yarn dev` (port 3000, 5173, etc.)
 - `npm run develop` / `yarn develop` (Gatsby, port 8000)
 - `npm start` / `yarn start`
