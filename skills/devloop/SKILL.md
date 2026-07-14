@@ -15,11 +15,22 @@ For UI/styling/layout work where visual verification matters.
 
 ## Spin Up
 
-Check for an existing server first:
+Check for an existing server first. **Two steps — both required:**
+
 ```bash
+# 1. Find the correct port from vite.config.js / next.config.js / package.json / README
+#    Never use a port from memory or prior instructions without verifying against the config.
+
+# 2. Check that the right process is on that port
 lsof -i :<port> -t
 ```
-If running, reuse it. Otherwise, **always start with `detach: true`** so the server survives across tool calls, test runs, and session activity:
+
+If something is already on the port, confirm it is the project's dev server (not an unrelated process) by checking the log or the process command before reusing it:
+```bash
+ps -p <pid> -o command=
+```
+
+If it is the correct server, reuse it. Otherwise, **always start with `detach: true`** so the server survives across tool calls, test runs, and session activity:
 
 ```bash
 # Command to pass to the bash tool with mode: "async", detach: true
