@@ -82,11 +82,12 @@ After each change:
 
 When the user approves (e.g. "commit", "ship it", "looks good"):
 1. Run the project's test and build commands
-2. Stop the dev server — verify the PID is the dev server before killing:
+2. Stop the dev server — capture the PID(s) once, verify, then kill the same PIDs:
    ```bash
-   lsof -i :<port> -sTCP:LISTEN -t | xargs -I{} ps -ww -p {} -o command=
+   dev_pids=$(lsof -i :<port> -sTCP:LISTEN -t)
+   echo "$dev_pids" | xargs -I{} ps -ww -p {} -o command=
    # Confirm it's your dev server, then:
-   lsof -i :<port> -sTCP:LISTEN -t | xargs kill
+   echo "$dev_pids" | xargs kill
    ```
 3. Commit and push (or create PR if requested)
 4. If the user corrected a pattern during the loop, update `AGENTS.md`

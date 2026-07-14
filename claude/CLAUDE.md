@@ -128,7 +128,7 @@ the conflict and let the user decide.
 - **NEVER rebase a PR branch for any reason** — not to update it, not to
   resolve conflicts, not to clean up history. Rebase rewrites commits and
   requires a force push, both of which are prohibited. To integrate upstream
-  changes, use `git merge origin/<base>`.
+  changes, run `git fetch origin` first, then `git merge origin/<base>`.
 - After resolving merge conflicts, verify files and run checks before
   committing.
 

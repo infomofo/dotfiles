@@ -12,4 +12,4 @@ export NVM_DIR="${XDG_CONFIG_HOME:-$HOME}/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 # mise
-eval "$(mise activate zsh)"
+command -v mise &>/dev/null && eval "$(mise activate zsh)"
