@@ -25,9 +25,9 @@ Check for an existing server first. **Two steps — both required:**
 lsof -i :<port> -sTCP:LISTEN -t
 ```
 
-If something is already on the port, confirm it is the project's dev server (not an unrelated process) by checking the log or the process command before reusing it:
+If something is already on the port, confirm it is the project's dev server (not an unrelated process). `lsof` can return multiple PIDs — check each one. Use `-ww` to prevent truncation of long commands:
 ```bash
-ps -p <pid> -o command=
+ps -ww -p <pid> -o command=
 ```
 
 If it is the correct server, reuse it. Otherwise, **always start with `detach: true`** so the server survives across tool calls, test runs, and session activity:
@@ -82,6 +82,11 @@ After each change:
 
 When the user approves (e.g. "commit", "ship it", "looks good"):
 1. Run the project's test and build commands
-2. Stop the dev server: `lsof -i :<port> -sTCP:LISTEN -t | xargs kill`
+2. Stop the dev server — verify the PID is the dev server before killing:
+   ```bash
+   lsof -i :<port> -sTCP:LISTEN -t | xargs -I{} ps -ww -p {} -o command=
+   # Confirm it's your dev server, then:
+   lsof -i :<port> -sTCP:LISTEN -t | xargs kill
+   ```
 3. Commit and push (or create PR if requested)
 4. If the user corrected a pattern during the loop, update `AGENTS.md`
