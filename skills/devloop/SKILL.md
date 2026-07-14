@@ -21,7 +21,7 @@ Check for an existing server first. **Two steps — both required:**
 # 1. Find the correct port from vite.config.js / next.config.js / package.json / README
 #    Never use a port from memory or prior instructions without verifying against the config.
 
-# 2. Check that the right process is on that port
+# 2. Find the PID of any process listening on that port
 lsof -i :<port> -sTCP:LISTEN -t
 ```
 
