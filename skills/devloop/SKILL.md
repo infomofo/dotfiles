@@ -22,7 +22,7 @@ Check for an existing server first. **Two steps — both required:**
 #    Never use a port from memory or prior instructions without verifying against the config.
 
 # 2. Check that the right process is on that port
-lsof -i :<port> -t
+lsof -i :<port> -sTCP:LISTEN -t
 ```
 
 If something is already on the port, confirm it is the project's dev server (not an unrelated process) by checking the log or the process command before reusing it:
@@ -39,7 +39,7 @@ If it is the correct server, reuse it. Otherwise, **always start with `detach: t
 
 Use `mode: "async"` with `detach: true` in the tool invocation (not in the bash command itself). Log output to `/tmp/<project>-dev.log` so you can inspect it later.
 
-Find the right command and port from `package.json`, `README`, or `AGENTS.md` — common examples:
+Find the right command from `package.json`, `README`, or `AGENTS.md`. Find the port from `package.json`, `vite.config.js`, `next.config.js`, or `README` — not from `AGENTS.md` (it may be stale). Common examples:
 - `npm run dev` / `yarn dev` (port 3000, 5173, etc.)
 - `npm run develop` / `yarn develop` (Gatsby, port 8000)
 - `npm start` / `yarn start`
@@ -47,14 +47,14 @@ Find the right command and port from `package.json`, `README`, or `AGENTS.md` �
 
 After starting, wait ~20s then verify with:
 ```bash
-lsof -i :<port> -t && echo "running" || echo "dead"
+lsof -i :<port> -sTCP:LISTEN -t && echo "running" || echo "dead"
 ```
 
 ## Keep the Server Alive
 
 **Before telling the user to verify**, always confirm the server is still up:
 ```bash
-lsof -i :<port> -t && echo "running" || echo "dead"
+lsof -i :<port> -sTCP:LISTEN -t && echo "running" || echo "dead"
 ```
 
 **Common things that kill the server:**
@@ -74,7 +74,7 @@ Then restart with `detach: true` again.
 Make small, incremental changes. Most dev servers hot-reload for template/style/component changes. Config files (e.g., `gatsby-node.js`, `vite.config.ts`, `.eleventy.js`, `vue.config.js`) typically require a server restart.
 
 After each change:
-1. Confirm server is up (`lsof -i :<port> -t`)
+1. Confirm server is up (`lsof -i :<port> -sTCP:LISTEN -t`)
 2. Tell the user the URL and exactly what changed
 3. Wait for feedback before the next iteration
 
@@ -82,6 +82,6 @@ After each change:
 
 When the user approves (e.g. "commit", "ship it", "looks good"):
 1. Run the project's test and build commands
-2. Stop the dev server: `lsof -i :<port> -t | xargs kill`
+2. Stop the dev server: `lsof -i :<port> -sTCP:LISTEN -t | xargs kill`
 3. Commit and push (or create PR if requested)
 4. If the user corrected a pattern during the loop, update `AGENTS.md`
