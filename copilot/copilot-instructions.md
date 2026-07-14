@@ -121,8 +121,7 @@ the conflict and let the user decide.
 ### Other git rules
 
 - Never delete remote branches or close PRs without explicit approval.
-- Never rebase to update a PR branch unless explicitly asked. Edit files
-  and commit on top instead.
+- **NEVER rebase a PR branch for any reason** — not to update it, not to resolve conflicts, not to clean up history. Rebase rewrites commits and requires a force push, both of which are prohibited. To integrate upstream changes, run `git fetch origin` first, then `git merge origin/<base>`.
 - After resolving merge conflicts, verify files and run checks before
   committing.
 
