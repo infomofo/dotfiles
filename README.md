@@ -88,7 +88,7 @@ git add skills/<skill-name>
 | Skill | Description |
 |-------|-------------|
 | `devloop` | Web dev server workflow for visual/UI verification |
-| `address-pr-comments` | Reviews and acts on automated PR review comments |
+| `review-pr-comments` | Reviews and acts on automated PR review comments |
 
 ## To add new vim plugins
 
