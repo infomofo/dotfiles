@@ -216,7 +216,7 @@ Do this step silently — only surface changes to the user if the title or body 
 
 ## Resolve Bot Threads
 
-The thread IDs were already fetched above. For each unresolved bot thread that was addressed (fixed in code or handled via instructions), resolve it:
+The thread IDs were already fetched above. For each unresolved bot thread that was addressed (fixed in code, handled via instructions, or dismissed during triage as outdated, stale, or not actionable), resolve it:
 
 ```bash
 gh api graphql -f query='
@@ -227,9 +227,7 @@ mutation {
 }'
 ```
 
-Never resolve threads where the first comment's author is a human. Never resolve a bot-opened thread that has human replies — those require the user's attention.
-
-Also resolve any `[OUTDATED-BOT]` thread IDs from the fetch output — these are outdated bot threads with no human replies and should always be closed silently, regardless of whether their content was acted on.
+This includes `[OUTDATED-BOT]` threads from the fetch output. Never resolve threads where the first comment's author is a human. Never resolve a bot-opened thread that has human replies — those require the user's attention.
 
 ## Request Re-review
 
