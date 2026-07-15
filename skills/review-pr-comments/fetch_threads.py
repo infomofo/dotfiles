@@ -110,7 +110,7 @@ def print_threads(all_threads, deleted):
         print(f"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {path}:{c.get('line')} thread:{t.get('id')}")
         print(c.get('body', '')[:300])
         if human_replies:
-            print(f"  *** {len(human_replies)} HUMAN REPLY — treat as higher priority than bot opener ***")
+            print(f"  *** {len(human_replies)} HUMAN REPL(IES): treat as higher priority than bot opener ***")
             for r in human_replies:
                 r_author = r.get('author') or {}
                 print(f"  [{r_author.get('login', 'unknown')}]: {r.get('body', '')[:300]}")
