@@ -28,7 +28,7 @@ gh pr view --json number,url
 ```
 If no open PR exists for the current branch, tell the user and stop.
 
-Fetch all review threads (paginating past 100 if needed) using GraphQL, retrieving up to 100 comments per thread so human replies to bot comments are visible. Before filtering threads, the script also fetches the PR's deleted files so threads on deleted paths are skipped, and skips resolved and outdated threads.
+Fetch all review threads (paginating past 100 if needed) using GraphQL, retrieving up to 100 comments per thread so human replies to bot comments are visible. Before filtering threads, the script also fetches the PR's deleted files so threads on deleted paths are skipped, and skips resolved threads. Outdated bot threads with no human replies are emitted with an `[OUTDATED-BOT]` marker for silent auto-resolution.
 
 Run the bundled [fetch_threads.py](./fetch_threads.py) script from this skill's base directory. It derives `owner`, `repo`, and `number` from `gh` automatically.
 
@@ -54,6 +54,8 @@ Human comments: fix the issue if it's valid. If not, surface them to the user ve
 **Human replies inside bot-opened threads carry the highest priority.** When a human has replied to a bot thread, treat the human's position as authoritative: if they say the issue is real, fix it even if you would otherwise dismiss the bot comment; if they say it's intentional or fine, surface it as a human dismissal. Always show human replies to the user verbatim in the action plan.
 
 If a comment is stale — the issue was already fixed in a prior commit on this branch — and has no human replies, resolve the thread silently and exclude it from the action plan. If it has human replies, surface those verbatim per the human reply rule above.
+
+Threads prefixed `[OUTDATED-BOT]` are outdated bot-opened threads with no human replies. Do not include them in the action plan. Collect their thread IDs and resolve them silently in the "Resolve Bot Threads" step.
 
 ## Evaluate Each Comment
 
@@ -226,6 +228,8 @@ mutation {
 ```
 
 Never resolve threads where the first comment's author is a human. Never resolve a bot-opened thread that has human replies — those require the user's attention.
+
+Also resolve any `[OUTDATED-BOT]` thread IDs from the fetch output — these are outdated bot threads with no human replies and should always be closed silently, regardless of whether their content was acted on.
 
 ## Request Re-review
 

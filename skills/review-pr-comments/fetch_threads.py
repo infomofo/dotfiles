@@ -78,9 +78,14 @@ query {{
 
 
 def print_threads(all_threads, deleted):
-    """Print unresolved, current threads not on deleted paths."""
+    """Print unresolved threads not on deleted paths.
+
+    Outdated bot threads with no human replies are emitted with an
+    [OUTDATED-BOT] prefix so the skill can auto-resolve them silently
+    without including them in the action plan.
+    """
     for t in all_threads:
-        if not t or t.get('isResolved') or t.get('isOutdated'):
+        if not t or t.get('isResolved'):
             continue
         all_comments = t.get('comments', {}).get('nodes') or []
         if not all_comments:
@@ -90,12 +95,20 @@ def print_threads(all_threads, deleted):
         if path in deleted:
             continue
         author = c.get('author') or {}
-        print(f"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {path}:{c.get('line')} thread:{t.get('id')}")
-        print(c.get('body', '')[:300])
+        is_bot = author.get('__typename') == 'Bot'
         human_replies = [
             r for r in all_comments[1:]
             if (r.get('author') or {}).get('__typename') == 'User'
         ]
+        if t.get('isOutdated'):
+            # Outdated bot threads with no human replies: mark for silent auto-resolution.
+            # All other outdated threads are skipped.
+            if is_bot and not human_replies:
+                print(f"[OUTDATED-BOT] {path}:{c.get('line')} thread:{t.get('id')}")
+                print()
+            continue
+        print(f"[{author.get('login', 'unknown')} / {author.get('__typename', 'unknown')}] {path}:{c.get('line')} thread:{t.get('id')}")
+        print(c.get('body', '')[:300])
         if human_replies:
             print(f"  *** {len(human_replies)} HUMAN REPLY — treat as higher priority than bot opener ***")
             for r in human_replies:
