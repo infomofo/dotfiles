@@ -135,7 +135,7 @@ Once approved, apply changes in this order:
    - File names: `<topic>.instructions.md` — e.g. `review.instructions.md`, `vue.instructions.md`, `javascript.instructions.md`
    - Frontmatter: `applyTo:` scoped to the relevant file glob — e.g. `"src/**/*.vue"`, `"**/*.js,**/*.mjs"`, `"**"` for repo-wide
    - Scope `applyTo` to match the type of file the comment was about — do not use `"**"` when a narrower glob fits
-   - For review-only rules, add `excludeAgent: "coding-agent"` so they apply to Copilot code review but not the coding agent
+   - For review-only rules, add `excludeAgent: "cloud-agent"` so they apply to Copilot code review but not the coding agent
    - Rules must be specific and concrete:
      - Good: `- Do not comment on import ordering — the project does not enforce a specific order.`
      - Bad: `- Don't comment on style.`
