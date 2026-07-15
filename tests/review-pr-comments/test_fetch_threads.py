@@ -150,7 +150,8 @@ class TestPrintThreads:
 
     def test_skips_outdated(self, capsys):
         fetch_threads.print_threads([make_thread(outdated=True)], set())
-        assert capsys.readouterr().out == ""
+        out = capsys.readouterr().out
+        assert "[OUTDATED-BOT] src/foo.py:10 thread:T1" in out
 
     def test_skips_deleted_path(self, capsys):
         fetch_threads.print_threads([make_thread(path="gone.py")], {"gone.py"})
@@ -171,14 +172,14 @@ class TestPrintThreads:
                  "author": {"login": "will", "__typename": "User"}}
         fetch_threads.print_threads([make_thread(extra_comments=[reply])], set())
         out = capsys.readouterr().out
-        assert "1 HUMAN REPLY" in out
+        assert "1 HUMAN REPL(IES)" in out
         assert "[will]: looks fine" in out
 
     def test_bot_reply_not_shown_as_human(self, capsys):
         reply = {"path": "src/foo.py", "line": 10, "body": "bot follow-up",
                  "author": {"login": "copilot", "__typename": "Bot"}}
         fetch_threads.print_threads([make_thread(extra_comments=[reply])], set())
-        assert "HUMAN REPLY" not in capsys.readouterr().out
+        assert "HUMAN REPL(IES)" not in capsys.readouterr().out
 
     def test_multiple_human_replies(self, capsys):
         replies = [
@@ -189,7 +190,7 @@ class TestPrintThreads:
         ]
         fetch_threads.print_threads([make_thread(extra_comments=replies)], set())
         out = capsys.readouterr().out
-        assert "2 HUMAN REPLY" in out
+        assert "2 HUMAN REPL(IES)" in out
         assert "[alice]: reply one" in out
         assert "[bob]: reply two" in out
 
@@ -197,7 +198,7 @@ class TestPrintThreads:
         reply = {"path": "src/foo.py", "line": 10, "body": "orphaned",
                  "author": None}
         fetch_threads.print_threads([make_thread(extra_comments=[reply])], set())
-        assert "HUMAN REPLY" not in capsys.readouterr().out
+        assert "HUMAN REPL(IES)" not in capsys.readouterr().out
 
     def test_missing_author_defaults_to_unknown(self, capsys):
         t = make_thread()
