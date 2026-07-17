@@ -75,6 +75,19 @@ Shared skills live in `skills/`. Each skill is a directory containing a `SKILL.m
 
 `~/.copilot/skills` and `~/.claude/skills` are both symlinked to `skills/` by `setup.sh`, so all skills are available in every project automatically for both tools.
 
+### Installing a skill without cloning this repo
+
+Use a sparse clone to fetch just the skill directory:
+
+```sh
+git clone --depth 1 --filter=blob:none --sparse https://github.com/infomofo/dotfiles.git /tmp/dotfiles-skills
+git -C /tmp/dotfiles-skills sparse-checkout set skills/review-pr-comments
+cp -r /tmp/dotfiles-skills/skills/review-pr-comments ~/.claude/skills/
+rm -rf /tmp/dotfiles-skills
+```
+
+Replace `review-pr-comments` with any skill name from the table below.
+
 ### To add a new skill
 
 ```sh
