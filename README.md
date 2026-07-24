@@ -77,16 +77,39 @@ Shared skills live in `skills/`. Each skill is a directory containing a `SKILL.m
 
 ### Installing a skill without cloning this repo
 
-Use a sparse clone to fetch just the skill directory:
+Pick the destination that matches your tool (`~/.claude/skills` for Claude Code, `~/.copilot/skills` for GitHub Copilot CLI).
+
+**Option 1 — curl (individual files)**
+
+Each skill is a directory. Use the GitHub API to download each file:
 
 ```sh
+SKILL=review-pr-comments
+DEST=~/.claude/skills/$SKILL
+mkdir -p "$DEST"
+
+# List files in the skill directory, then download each one
+curl -fsSL "https://api.github.com/repos/infomofo/dotfiles/contents/skills/$SKILL" \
+  | python3 -c "import sys,json; [print(f['download_url']) for f in json.load(sys.stdin) if f.get('download_url')]" \
+  | while read url; do
+      filename=$(basename "$url")
+      curl -fsSL "$url" -o "$DEST/$filename"
+    done
+```
+
+Replace `SKILL=review-pr-comments` with any skill name from the table below. If you don't have Python 3, use the sparse clone method instead.
+
+**Option 2 — sparse clone**
+
+```sh
+SKILL=review-pr-comments
 git clone --depth 1 --filter=blob:none --sparse https://github.com/infomofo/dotfiles.git /tmp/dotfiles-skills
-git -C /tmp/dotfiles-skills sparse-checkout set skills/review-pr-comments
-cp -r /tmp/dotfiles-skills/skills/review-pr-comments ~/.claude/skills/
+git -C /tmp/dotfiles-skills sparse-checkout set "skills/$SKILL"
+cp -r "/tmp/dotfiles-skills/skills/$SKILL" ~/.claude/skills/
 rm -rf /tmp/dotfiles-skills
 ```
 
-Replace `review-pr-comments` with any skill name from the table below.
+Replace `SKILL=review-pr-comments` with any skill name from the table below.
 
 ### To add a new skill
 
