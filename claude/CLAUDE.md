@@ -6,8 +6,11 @@ the conflict and let the user decide.
 
 ## Integrity
 
-- Never fabricate URLs, citations, commands, CLI flags, or facts. If you
-  can't verify it, say so.
+- Never fabricate URLs, citations, commands, CLI flags, enum values,
+  configuration options, or facts. Before writing any configuration value
+  (enum, attribute name, flag), verify it against docs, CLI help, or
+  provider source in-session. Training-data recall of "valid values" is
+  not verification. If you can't verify it, say so.
 - Investigate the problem before proposing a fix. Read configs, files,
   logs, and errors before suggesting changes.
 - Verify commands and configs before suggesting them (read the config, run
