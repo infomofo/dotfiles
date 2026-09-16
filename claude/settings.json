@@ -36,6 +36,11 @@
       }
     ]
   },
+  "permissions": {
+    "ask": [
+      "Bash(git commit*)"
+    ]
+  },
   "enabledPlugins": {
     "slack@claude-plugins-official": true
   }
