@@ -57,6 +57,8 @@ If a comment is stale — the issue was already fixed in a prior commit on this 
 
 Threads prefixed `[OUTDATED-BOT]` are outdated bot-opened threads with no human replies. Do not include them in the action plan. Collect their thread IDs and resolve them silently in the "Resolve Bot Threads" step.
 
+**Track bot and human thread IDs separately.** Maintain two lists during triage: one for bot-opened threads (eligible for resolution) and one for human-opened threads (never resolved by you). Only the bot list feeds into the "Resolve Bot Threads" step.
+
 ## Evaluate Each Comment
 
 **Before triaging any comment, run this checklist:**
@@ -216,7 +218,11 @@ Do this step silently — only surface changes to the user if the title or body 
 
 ## Resolve Bot Threads
 
-The thread IDs were already fetched above. For each unresolved bot thread that was addressed (fixed in code, handled via instructions, or dismissed during triage as outdated, stale, or not actionable), resolve it:
+**Only resolve threads whose first comment author is a Bot.** Human-opened threads are never yours to close, even if you fixed the issue they raised. Leave them for the human reviewer to resolve.
+
+Resolve each bot-opened thread that was addressed (fixed in code, handled via instructions, or dismissed during triage as outdated, stale, or not actionable), plus all `[OUTDATED-BOT]` threads from the fetch output. Skip any bot-opened thread that has human replies.
+
+Before calling the mutation, verify the thread ID is in your bot-only list. If you are unsure whether a thread was bot-opened, do not resolve it.
 
 ```bash
 gh api graphql -f query='
@@ -227,11 +233,35 @@ mutation {
 }'
 ```
 
-This includes `[OUTDATED-BOT]` threads from the fetch output. Never resolve threads where the first comment's author is a human. Never resolve a bot-opened thread that has human replies — those require the user's attention.
+## Minimize Stale Bot Summaries
+
+Before requesting re-review, hide old Copilot summary comments so the PR timeline shows only the latest review. Fetch all bot reviews with a body and minimize each one as outdated:
+
+```bash
+gh api repos/{owner}/{repo}/pulls/{number}/reviews | python3 -c "
+import json, sys
+for r in json.load(sys.stdin):
+    if r['user']['type'] == 'Bot' and r.get('body'):
+        print(r['node_id'])
+"
+```
+
+For each node ID:
+
+```bash
+gh api graphql -f query='
+mutation {
+  minimizeComment(input: { subjectId: "{node_id}", classifier: OUTDATED }) {
+    minimizedComment { isMinimized }
+  }
+}'
+```
+
+Batch multiple node IDs into a single mutation using aliases (`m1: minimizeComment(...)`, `m2: minimizeComment(...)`, etc.) when there are several.
 
 ## Request Re-review
 
-After resolving threads, re-request a Copilot review via GraphQL. The REST API and `gh pr edit --add-reviewer` don't support bots, but the GraphQL `requestReviews` mutation has a `botIds` field that does — including re-requesting after a bot has already reviewed.
+After resolving threads and minimizing stale summaries, re-request a Copilot review via GraphQL. The REST API and `gh pr edit --add-reviewer` don't support bots, but the GraphQL `requestReviews` mutation has a `botIds` field that does — including re-requesting after a bot has already reviewed.
 
 Step 1 — get the PR node ID:
 ```bash

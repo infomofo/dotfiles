@@ -55,68 +55,6 @@ the conflict and let the user decide.
 
 ## Git
 
-### Hard stops
-
-- **NEVER run `git push` targeting main or master.** No exceptions. No
-  hotfixes. No "it's urgent." If the current branch is main/master,
-  STOP and create a feature branch first.
-- **NEVER chain `git commit` and `git push` in a single command.** They
-  must be separate invocations so the commit output can be inspected
-  before pushing.
-- **NEVER commit without explicit approval.** After editing files, show
-  the diff and stop. Wait for an explicit "commit", "push", "open a PR",
-  or equivalent instruction. Silence is not approval. "Let's fix this"
-  is not approval. "Let's make these changes" is not approval. Previous
-  approval is not approval. Approval answers only the specific question
-  asked — if a workflow has multiple gates (e.g. "Approve to apply?" then
-  later "Approve to commit?"), approval of an earlier gate is never
-  approval for a later one. Approval covers only the exact diff shown at
-  the moment it was given — any subsequent edit, however small, requires
-  showing a new diff and getting new approval before committing.
-- **"Keep working until done" does NOT mean commit or push.** It means
-  finish the code and tests. Stop at the diff review step. Show the diff
-  stat, confirm tests pass, and wait for explicit approval.
-- **NEVER run `git push --force`, `git push --force-with-lease`, or any
-  force push variant.** No exceptions. No "the history was already
-  rewritten." No "it's my branch." If a push is rejected or history
-  has diverged, STOP and ask the user what to do.
-- **NEVER run `git commit --amend`.** Always create new commits. If the
-  user explicitly says "amend," confirm which commit before running it.
-  "Fix the last commit" is not "amend" unless the user literally says
-  the word "amend."
-- **NEVER run `git reset --hard` on a branch that has been pushed to a
-  remote.** This rewrites history and requires a force push to sync.
-  If you need to undo changes on a remote-tracking branch, use
-  `git revert` or ask the user.
-
-### Pre-commit checklist (run every time, no exceptions)
-
-1. `git branch --show-current` — verify on a PR branch, not a protected
-   branch (main, master, etc.). If not on a PR branch, STOP and create
-   one.
-2. Run lint and tests on the current working tree. No exceptions for
-   "trivial" or "non-code" changes. Always use the repo's build tool
-   or virtual environment, never system-installed binaries (e.g.
-   `poetry run ruff`, `poetry run pytest`, `sbt test`).
-   - Before running any lint/test command, read the project's Makefile
-     (or equivalent) to find the canonical invocation. Use it exactly.
-   - If a tool is not installed in the local virtual environment, STOP.
-     Do not fall back to a system binary. Report the gap and ask.
-   - Never guess at config file paths (`--config`). Read the Makefile
-     or pyproject.toml to find the correct invocation.
-3. `git status` — check for untracked files that should not be staged.
-4. `git diff --stat` — show diff, confirm lint/tests pass, wait for
-   explicit approval before proceeding.
-5. If the user requests changes, make them and go back to step 1.
-
-### Pre-push checklist (run every time, no exceptions)
-
-1. Read the commit output from step above. Verify the branch name in
-   `[branch hash]` is NOT main/master. If it says `[main ...]` or
-   `[master ...]`, do NOT push. Alert the user immediately.
-2. `git log --oneline -1` — confirm the commit message and branch.
-3. Only then run `git push`.
-
 ### Branch awareness
 
 - The branch shown at session start may change mid-session (e.g. after
@@ -125,13 +63,23 @@ the conflict and let the user decide.
   operation (commit, push, rebase, merge, checkout).
 - Branch names: `$USER/<short-description>`
 
+### Command style
+
+- Run `git` commands from the repo working directory without `-C`. The
+  working directory is already the repo root. Using `git -C <path>` makes
+  each command look unique to the permission system, defeating wildcard
+  permission grants like `git:*`.
+
 ### Other git rules
 
+- Never amend commits. Always create new commits. Amend only if the
+  user explicitly says "amend".
+- Never force-push (`--force`, `--force-with-lease`). To update a PR,
+  make a new commit and push normally. Force-push only if the user
+  explicitly says "force push".
 - Never delete remote branches or close PRs without explicit approval.
-- **NEVER rebase a PR branch for any reason** — not to update it, not to
-  resolve conflicts, not to clean up history. Rebase rewrites commits and
-  requires a force push, both of which are prohibited. To integrate upstream
-  changes, run `git fetch origin` first, then `git merge origin/<base>`.
+- To integrate upstream changes, run `git fetch origin` first, then
+  `git merge origin/<base>`.
 - After resolving merge conflicts, verify files and run checks before
   committing.
 
